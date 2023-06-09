@@ -83,14 +83,39 @@ extern int yydebug;
     DIV = 284,                     /* DIV  */
     AND = 285,                     /* AND  */
     NOT = 286,                     /* NOT  */
-    OR = 287                       /* OR  */
+    OR = 287,                      /* OR  */
+    TIPO = 288,                    /* TIPO  */
+    VALOR_BOOL = 289,              /* VALOR_BOOL  */
+    NUMERO = 290,                  /* NUMERO  */
+    MAIOR = 291,                   /* MAIOR  */
+    MENOR = 292,                   /* MENOR  */
+    IGUAL = 293,                   /* IGUAL  */
+    MENOR_IGUAL = 294,             /* MENOR_IGUAL  */
+    MAIOR_IGUAL = 295,             /* MAIOR_IGUAL  */
+    DIFERENTE = 296,               /* DIFERENTE  */
+    MAIS = 297,                    /* MAIS  */
+    MENOS = 298,                   /* MENOS  */
+    VEZES = 299,                   /* VEZES  */
+    READ = 300,                    /* READ  */
+    WRITE = 301                    /* WRITE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+union YYSTYPE
+{
+#line 30 "compilador.y"
+
+   char * str;  // define o tipo str
+   int int_val; // define o tipo int_val
+   struct simbolo *simb;
+
+#line 116 "compilador.tab.h"
+
+};
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
