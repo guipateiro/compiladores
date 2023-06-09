@@ -10,9 +10,21 @@
 #include <string.h>
 #include "compilador.h"
 #include "tabela_simb/tabela_simb.h"
+#include "tabela_simb/simbolo.h"
+
 
 int num_vars;
 char mepa_buf[128];
+int nivel_lexico;
+int num_carrega_tipo;
+struct cat_conteudo cc;
+struct tab_simb *tabela;
+struct simbolo s;
+
+
+
+
+
 
 %}
 
@@ -34,11 +46,11 @@ char mepa_buf[128];
 }
 
 %type <str> relacao;
+%type <str> div_vezes_and;
 
 
 %nonassoc ELSE
 %nonassoc "lower_then_else"
-
 
 %%
 
@@ -51,6 +63,8 @@ char mepa_buf[128];
 // =========== REGRA 1 ============= //
 programa    :{
              geraCodigo (NULL, "INPP");
+             tabela = inicializa();
+             nivel_lexico = 0;
              }
              PROGRAM IDENT
              ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
@@ -85,7 +99,9 @@ parte_declara_vars:
 declaracao_de_vars: declaracao_de_vars declaracao_de_var 
                   | declaracao_de_var
 
-declaracao_de_var: {num_vars = 0;}
+declaracao_de_var: {num_vars = 0;
+                     num_carrega_tipo = 0;   
+                  }
                    lista_idents DOIS_PONTOS tipo PONTO_E_VIRGULA
                   {
 					   sprintf(mepa_buf, "AMEM %d", num_vars);
@@ -94,13 +110,27 @@ declaracao_de_var: {num_vars = 0;}
 
 ;
 
-tipo        : TIPO
+tipo        : TIPO 
 ;
 
 
 // =========== REGRA 10 ============= //
-lista_idents: lista_idents VIRGULA IDENT {num_vars++;}
-            | IDENT {num_vars++;}
+lista_idents: lista_idents VIRGULA IDENT {
+               cc.var.deslocamento = num_vars;
+               printf("adicionado token [%s]\n", token);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               adicionar(&tabela, s);
+               num_carrega_tipo++;
+               num_vars++;
+               }
+            | IDENT {
+               cc.var.deslocamento = num_vars;
+               printf("adicionado token [%s]\n", token);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               adicionar(&tabela, s);
+               num_carrega_tipo++;
+               num_vars++;
+               }
 ;
 
 // =========== REGRA 16 ============= //
@@ -120,9 +150,9 @@ comandos:
 
 // =========== REGRA 18 ============= //
 comando: 
-         atribui 
-         | chamada_de_procedimento
-         | comando_composto
+         atribui {
+         //| chamada_de_procedimento
+         }| comando_composto
          | comando_condicional
          | comando_repetitivo
  
@@ -143,7 +173,7 @@ comando_condicional:
 
 else_ou_nada: 
                ELSE comando
-               |
+               | %prec "lower_then_else"
 ;                
 
 // =========== REGRA 23 ============= //
@@ -153,7 +183,9 @@ comando_repetitivo:
 
 // =========== REGRA 25 ============= //
 expressao:
-            expressao_simples relacao expressao_simples
+            expressao_simples relacao expressao_simples{
+               geraCodigo(NULL, $2);
+            }
             | expressao_simples
 ;
 
@@ -170,26 +202,52 @@ relacao:
 // =========== REGRA 27 ============= //
 expressao_simples:
                termo {}
-               | MAIS termo {}
+               | MAIS termo {
+                   geraCodigo( NULL, "INVT");
+               }
                | MENOS termo {}
-               | expressao_simples MAIS termo  {}
-               | expressao_simples MENOS termo {}
-               | expressao_simples OR termo {}
+               | expressao_simples MAIS termo  {
+                  geraCodigo( NULL, "SOMA");
+               }
+               | expressao_simples MENOS termo {
+                   geraCodigo( NULL, "SUBT");
+               }
+               | expressao_simples OR termo {
+                   geraCodigo( NULL, "DISJ");
+               }
 ;
 
 termo: 
       fator  {}
-      | termo DIV fator  {}
-      | termo VEZES fator {}
-      | termo AND fator {}
+      | termo DIV fator  {
+         geraCodigo( NULL, "MULT");
+      }
+      | termo VEZES fator  {
+         geraCodigo( NULL, "DIVI");
+      }
+      | termo AND fator  {
+          geraCodigo( NULL, "CONJ");
+      }
 ;
 
-
 fator:
-      IDENT
-      | NUMERO
-      | chamada_de_funcao
+      IDENT {
+         printf("buscando token %s\n", token);
+         if(buscar(&tabela, token) != NULL){
+            geraCodigo(NULL, "TOKE");
+         }else{
+            printf("falha ao procurar token %s\n", token);
+         }
+      }
+      | NUMERO {
+         sprintf (mepa_buf, "CRCT %d", atoi(token));
+         geraCodigo(NULL, mepa_buf);
+      //| chamada_de_funcao
+      }
       | ABRE_PARENTESES expressao_simples FECHA_PARENTESES
+      | NOT fator{
+         geraCodigo(NULL, "NEGA");
+      }
 ;
 
 chamada_de_funcao:
@@ -223,8 +281,12 @@ int main (int argc, char** argv) {
  *  Inicia a Tabela de S�mbolos
  * ------------------------------------------------------------------- */
 
+
+
    yyin=fp;
    yyparse();
+
+   imprime_tabela(&tabela);
 
    return 0;
 }
