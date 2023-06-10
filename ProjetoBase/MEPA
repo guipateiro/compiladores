@@ -1,8 +1,28 @@
      INPP
-     AMEM 4
-     AMEM 1
-     CRCT 5
-     TOKE
+     AMEM 5
+     CRCT 7
+     ARMZ 0 , 2
+     CRVL 0 , 2
      CRCT 2
+     INVR
      SUBT
+     ARMZ 0 , 3
+     CRCT 8
+     ARMZ 0 , 0
+     CRCT 4
+     INVR
+     ARMZ 0 , 1
+     CRVL 0 , 0
+     CRVL 0 , 1
+     CRCT 7
+     CRVL 0 , 2
+     DIVI
+     CRCT 3
+     SUBT
+     MULT
+     SOMA
+     CRCT 8
+     SUBT
+     ARMZ 0 , 4
+     DMEM 5
      PARA

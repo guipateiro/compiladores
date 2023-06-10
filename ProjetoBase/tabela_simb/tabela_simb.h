@@ -16,7 +16,7 @@ void adicionar(struct tab_simb **tabela, struct simbolo simb);
 
 struct simbolo remover(struct tab_simb **tabela) ;
 
-struct simbolo *buscar(struct tab_simb **tabela, const char *nome);
+struct simbolo *busca(struct tab_simb **tabela, const char *nome);
 
 void remover_varios(struct tab_simb **tabela, int qunatiade);
 

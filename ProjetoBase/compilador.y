@@ -20,7 +20,9 @@ int num_carrega_tipo;
 struct cat_conteudo cc;
 struct tab_simb *tabela;
 struct simbolo s;
-
+struct simbolo *ps;
+struct simbolo *esquerdo;
+int num_vars_por_nivel[10];
 
 
 
@@ -46,7 +48,6 @@ struct simbolo s;
 }
 
 %type <str> relacao;
-%type <str> div_vezes_and;
 
 
 %nonassoc ELSE
@@ -67,12 +68,17 @@ programa    :{
              nivel_lexico = 0;
              }
              PROGRAM IDENT
-             ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
+             ABRE_PARENTESES input_idents FECHA_PARENTESES PONTO_E_VIRGULA
              bloco PONTO {
+             sprintf (mepa_buf, "DMEM %d", num_vars_por_nivel[0]);
+             geraCodigo (NULL, mepa_buf);
              geraCodigo (NULL, "PARA");
              }
 ;
 
+
+input_idents: IDENT VIRGULA IDENT
+;
 
 // =========== REGRA 2 ============= //
 bloco       :
@@ -90,8 +96,16 @@ bloco       :
 
 
 // =========== REGRA 8 ============= //
-parte_declara_vars: 
-					VAR declaracao_de_vars
+parte_declara_vars: {num_vars = 0;
+                     num_carrega_tipo = 0;
+
+                  }
+					VAR declaracao_de_vars {
+					   sprintf(mepa_buf, "AMEM %d", num_vars);
+					   geraCodigo(NULL,mepa_buf);
+					   }
+
+
                |
 ;
 
@@ -99,14 +113,8 @@ parte_declara_vars:
 declaracao_de_vars: declaracao_de_vars declaracao_de_var 
                   | declaracao_de_var
 
-declaracao_de_var: {num_vars = 0;
-                     num_carrega_tipo = 0;   
-                  }
+declaracao_de_var: 
                    lista_idents DOIS_PONTOS tipo PONTO_E_VIRGULA
-                  {
-					   sprintf(mepa_buf, "AMEM %d", num_vars);
-					   geraCodigo(NULL,mepa_buf);
-					   }
 
 ;
 
@@ -122,6 +130,7 @@ lista_idents: lista_idents VIRGULA IDENT {
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
+               num_vars_por_nivel[nivel_lexico]++;
                }
             | IDENT {
                cc.var.deslocamento = num_vars;
@@ -130,6 +139,7 @@ lista_idents: lista_idents VIRGULA IDENT {
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
+               num_vars_por_nivel[nivel_lexico]++;
                }
 ;
 
@@ -160,7 +170,15 @@ comando:
  
 // =========== REGRA 19 ============= //
 atribui:
-         IDENT ATRIBUICAO expressao
+         IDENT {
+            if((esquerdo = busca(&tabela, token)) == NULL){
+               printf("ERRO: identificador nao encontrado/nao declarado");
+            }
+         }
+          ATRIBUICAO expressao{
+            sprintf(mepa_buf, "ARMZ %d , %d",esquerdo->nivel , esquerdo->conteudo.var.deslocamento );
+            geraCodigo(NULL, mepa_buf);
+         }
 
 // =========== REGRA 20 ============= //
 chamada_de_procedimento:
@@ -203,9 +221,10 @@ relacao:
 expressao_simples:
                termo {}
                | MAIS termo {
-                   geraCodigo( NULL, "INVT");
                }
-               | MENOS termo {}
+               | MENOS termo {
+                  geraCodigo(NULL, "INVR");
+               }
                | expressao_simples MAIS termo  {
                   geraCodigo( NULL, "SOMA");
                }
@@ -220,10 +239,10 @@ expressao_simples:
 termo: 
       fator  {}
       | termo DIV fator  {
-         geraCodigo( NULL, "MULT");
+         geraCodigo( NULL, "DIVI");
       }
       | termo VEZES fator  {
-         geraCodigo( NULL, "DIVI");
+         geraCodigo( NULL, "MULT");
       }
       | termo AND fator  {
           geraCodigo( NULL, "CONJ");
@@ -233,8 +252,9 @@ termo:
 fator:
       IDENT {
          printf("buscando token %s\n", token);
-         if(buscar(&tabela, token) != NULL){
-            geraCodigo(NULL, "TOKE");
+         if((ps = busca(&tabela, token)) != NULL){
+            sprintf(mepa_buf, "CRVL %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
+            geraCodigo(NULL, mepa_buf);
          }else{
             printf("falha ao procurar token %s\n", token);
          }

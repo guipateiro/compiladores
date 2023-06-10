@@ -28,7 +28,7 @@ void coloca_tipo(struct tab_simb **tabela, int tipo, int quantidade){
     }    
 }
 
-struct simbolo *buscar(struct tab_simb **tabela, const char *nome){
+struct simbolo *busca(struct tab_simb **tabela, const char *nome){
     for(int i = (*tabela)->topo-1; i >= 0; i--){
         if (!strcmp( (*tabela)->simbolos[i].identificador, nome )) 
             return &(*tabela)->simbolos[i];
