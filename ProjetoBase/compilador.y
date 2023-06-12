@@ -10,9 +10,26 @@
 #include <string.h>
 #include "compilador.h"
 #include "tabela_simb/tabela_simb.h"
+#include "tabela_simb/simbolo.h"
+#include "gerador_rotulos/gerador_rotulos.h"
+
 
 int num_vars;
 char mepa_buf[128];
+int nivel_lexico;
+int num_carrega_tipo;
+struct cat_conteudo cc;
+struct tab_simb *tabela;
+struct simbolo s;
+struct simbolo *ps;
+struct simbolo *esquerdo;
+int num_vars_por_nivel[10];
+struct pilha_rotulos *p_rotulos;
+struct rotulo rotulo_a;
+
+
+
+
 
 %}
 
@@ -39,7 +56,6 @@ char mepa_buf[128];
 %nonassoc ELSE
 %nonassoc "lower_then_else"
 
-
 %%
 
 
@@ -51,22 +67,36 @@ char mepa_buf[128];
 // =========== REGRA 1 ============= //
 programa    :{
              geraCodigo (NULL, "INPP");
+             tabela = inicializa();
+             p_rotulos = inicializa_rotulos();
+             nivel_lexico = 0;
              }
              PROGRAM IDENT
-             ABRE_PARENTESES lista_idents FECHA_PARENTESES PONTO_E_VIRGULA
+             ABRE_PARENTESES input_idents FECHA_PARENTESES PONTO_E_VIRGULA
              bloco PONTO {
+             sprintf (mepa_buf, "DMEM %d", num_vars_por_nivel[0]);
+             geraCodigo (NULL, mepa_buf);
              geraCodigo (NULL, "PARA");
              }
 ;
 
 
+input_idents: IDENT VIRGULA IDENT
+;
+
 // =========== REGRA 2 ============= //
 bloco       :
             parte_declara_vars
             {
+            printf("COISA DE TESTE \n");
+            rotulo_a = gerarrotulo(&p_rotulos);
+            sprintf(mepa_buf, "DSVS %s", rotulo_a.rotulo);
+            geraCodigo (NULL, mepa_buf);
             }
             parte_declara_sub_rotinas
             {
+            rotulo_a = pegarrotulo(&p_rotulos);
+            geraCodigo (rotulo_a.rotulo, "NADA");
             }
             comando_composto
             {
@@ -76,8 +106,16 @@ bloco       :
 
 
 // =========== REGRA 8 ============= //
-parte_declara_vars: 
-					VAR declaracao_de_vars
+parte_declara_vars: {num_vars = 0;
+                     num_carrega_tipo = 0;
+
+                  }
+					VAR declaracao_de_vars {
+					   sprintf(mepa_buf, "AMEM %d", num_vars);
+					   geraCodigo(NULL,mepa_buf);
+					   }
+
+
                |
 ;
 
@@ -85,31 +123,66 @@ parte_declara_vars:
 declaracao_de_vars: declaracao_de_vars declaracao_de_var 
                   | declaracao_de_var
 
-declaracao_de_var: {num_vars = 0;}
+declaracao_de_var: 
                    lista_idents DOIS_PONTOS tipo PONTO_E_VIRGULA
-                  {
-					   sprintf(mepa_buf, "AMEM %d", num_vars);
-					   geraCodigo(NULL,mepa_buf);
-					   }
 
 ;
 
-tipo        : TIPO
+tipo        : TIPO 
 ;
 
 
 // =========== REGRA 10 ============= //
-lista_idents: lista_idents VIRGULA IDENT {num_vars++;}
-            | IDENT {num_vars++;}
+lista_idents: lista_idents VIRGULA IDENT {
+               cc.var.deslocamento = num_vars;
+               printf("adicionado token [%s]\n", token);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               adicionar(&tabela, s);
+               num_carrega_tipo++;
+               num_vars++;
+               num_vars_por_nivel[nivel_lexico]++;
+               }
+            | IDENT {
+               cc.var.deslocamento = num_vars;
+               printf("adicionado token [%s]\n", token);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               adicionar(&tabela, s);
+               num_carrega_tipo++;
+               num_vars++;
+               num_vars_por_nivel[nivel_lexico]++;
+               }
 ;
 
 // =========== REGRA 16 ============= //
 comando_composto: T_BEGIN comandos T_END
-
-
-parte_declara_sub_rotinas:
 ;
 
+parte_declara_sub_rotinas:
+                           parte_declara_sub_rotinas declara_procedimento
+                           | parte_declara_sub_rotinas declara_function 
+                           |
+;
+
+declara_procedimento:
+                     PROCEDURE IDENT ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
+                     | PROCEDURE IDENT PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
+;
+
+declara_function:
+               FUNCTION IDENT ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES DOIS_PONTOS TIPO PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
+               | FUNCTION IDENT DOIS_PONTOS TIPO PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
+; 
+
+
+lista_paramentro_formais:
+                        lista_paramentro_formais VIRGULA parametro
+                        | parametro
+;
+
+parametro:
+         VAR IDENT DOIS_PONTOS TIPO
+         |  IDENT DOIS_PONTOS TIPO
+;
 
 // =========== REGRA 17 ============= //
 comandos: 
@@ -120,17 +193,27 @@ comandos:
 
 // =========== REGRA 18 ============= //
 comando: 
-         atribui 
-         | chamada_de_procedimento
-         | comando_composto
+         atribui {
+         //| chamada_de_procedimento
+         }| comando_composto
          | comando_condicional
          | comando_repetitivo
+         | leitura
+         | escrita
  
          
  
 // =========== REGRA 19 ============= //
 atribui:
-         IDENT ATRIBUICAO expressao
+         IDENT {
+            if((esquerdo = busca(&tabela, token)) == NULL){
+               printf("ERRO: identificador nao encontrado/nao declarado");
+            }
+         }
+          ATRIBUICAO expressao{
+            sprintf(mepa_buf, "ARMZ %d , %d",esquerdo->nivel , esquerdo->conteudo.var.deslocamento );
+            geraCodigo(NULL, mepa_buf);
+         }
 
 // =========== REGRA 20 ============= //
 chamada_de_procedimento:
@@ -138,22 +221,56 @@ chamada_de_procedimento:
 
 // =========== REGRA 22 ============= //
 comando_condicional:
-                  IF expressao THEN comando else_ou_nada
+                  IF expressao {
+                     rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+                     sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
+                     geraCodigo(NULL, mepa_buf);
+                  }
+                  THEN comando {
+                     rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+                     sprintf(mepa_buf, "DSVS %s",rotulo_a.rotulo);
+                     geraCodigo(NULL, mepa_buf);
+                     rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
+                     geraCodigo (rotulo_a.rotulo, "NADA"); 
+                  }
+                  else_ou_nada{
+                        rotulo_a = p_rotulos->pilha[p_rotulos->topo-1];
+                        geraCodigo (rotulo_a.rotulo, "NADA"); 
+                        remove_n(&p_rotulos, 2);
+                  }
 ;
 
 else_ou_nada: 
                ELSE comando
-               |
+               | %prec "lower_then_else"
 ;                
 
 // =========== REGRA 23 ============= //
-comando_repetitivo:
-                  WHILE expressao DO comando
+comando_repetitivo:{
+                        rotulo_a = gerarrotulo(&p_rotulos); //cria um rotulo mas esse e o proximo rotulo vai ser usado como fila e nao como pilha
+                        geraCodigo (rotulo_a.rotulo, "NADA"); 
+                     }
+                     WHILE
+                     expressao {
+                        rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+                        sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
+                        geraCodigo(NULL, mepa_buf);
+                     }
+                     DO comando{
+                        rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
+                        sprintf(mepa_buf, "DSVS %s",rotulo_a.rotulo);
+                        geraCodigo(NULL, mepa_buf);
+                        rotulo_a = p_rotulos->pilha[p_rotulos->topo-1];
+                        geraCodigo (rotulo_a.rotulo, "NADA"); 
+                        remove_n(&p_rotulos, 2);
+                     }
 ;
 
 // =========== REGRA 25 ============= //
 expressao:
-            expressao_simples relacao expressao_simples
+            expressao_simples relacao expressao_simples{
+               geraCodigo(NULL, $2);
+            }
             | expressao_simples
 ;
 
@@ -170,34 +287,116 @@ relacao:
 // =========== REGRA 27 ============= //
 expressao_simples:
                termo {}
-               | MAIS termo {}
-               | MENOS termo {}
-               | expressao_simples MAIS termo  {}
-               | expressao_simples MENOS termo {}
-               | expressao_simples OR termo {}
+               | MAIS termo {
+               }
+               | MENOS termo {
+                  geraCodigo(NULL, "INVR");
+               }
+               | expressao_simples MAIS termo  {
+                  geraCodigo( NULL, "SOMA");
+               }
+               | expressao_simples MENOS termo {
+                   geraCodigo( NULL, "SUBT");
+               }
+               | expressao_simples OR termo {
+                   geraCodigo( NULL, "DISJ");
+               }
 ;
 
 termo: 
       fator  {}
-      | termo DIV fator  {}
-      | termo VEZES fator {}
-      | termo AND fator {}
+      | termo DIV fator  {
+         geraCodigo( NULL, "DIVI");
+      }
+      | termo VEZES fator  {
+         geraCodigo( NULL, "MULT");
+      }
+      | termo AND fator  {
+          geraCodigo( NULL, "CONJ");
+      }
 ;
 
-
 fator:
-      IDENT
-      | NUMERO
-      | chamada_de_funcao
+      IDENT {
+         printf("buscando token %s\n", token);
+         if((ps = busca(&tabela, token)) != NULL){
+            sprintf(mepa_buf, "CRVL %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
+            geraCodigo(NULL, mepa_buf);
+         }else{
+            printf("falha ao procurar token %s\n", token);
+            exit(1);
+         }
+      }
+      | NUMERO {
+         sprintf (mepa_buf, "CRCT %d", atoi(token));
+         geraCodigo(NULL, mepa_buf);
+      //| chamada_de_funcao
+      }
       | ABRE_PARENTESES expressao_simples FECHA_PARENTESES
+      | NOT fator{
+         geraCodigo(NULL, "NEGA");
+      }
 ;
 
 chamada_de_funcao:
+                IDENT ABRE_PARENTESES lista_params FECHA_PARENTESES 
+;
+
+lista_params:;
+
+
+
+// =========== LEITURA ============= //
+leitura: 
+         READ ABRE_PARENTESES parametros_de_leitura FECHA_PARENTESES
+;
+
+parametros_de_leitura:
+                     parametros_de_leitura VIRGULA parametro_leitura
+                        | parametro_leitura
+;
+
+parametro_leitura:
+                  IDENT{
+                     geraCodigo(NULL, "LEIT");
+                     printf("buscando token %s\n", token);
+                     if((ps = busca(&tabela, token)) != NULL){
+                        sprintf(mepa_buf, "ARMZ %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
+                        geraCodigo(NULL, mepa_buf);
+                     }else{
+                        printf("falha ao procurar token %s\n", token);
+                        exit(1);
+                     }
+                  }
 ;
 
 
+// =========== ESCRITA ============= //
+escrita: 
+        WRITE ABRE_PARENTESES parametros_de_escrita FECHA_PARENTESES 
+;
 
+parametros_de_escrita:
+                     parametros_de_escrita VIRGULA parametro_escrita
+                        | parametro_escrita
+;
 
+parametro_escrita:
+                  IDENT {
+                     printf("buscando token %s\n", token);
+                     if((ps = busca(&tabela, token)) != NULL){
+                        sprintf(mepa_buf, "CRVL %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
+                        geraCodigo(NULL, mepa_buf);
+                        geraCodigo(NULL, "IMPR");
+                     }else{
+                        printf("falha ao procurar token %s\n", token);
+                        exit(1);
+                     }
+                  //| chamada_de_funcao{
+
+                    // }
+                  }
+;
 
 
 
@@ -223,8 +422,12 @@ int main (int argc, char** argv) {
  *  Inicia a Tabela de S�mbolos
  * ------------------------------------------------------------------- */
 
+
+
    yyin=fp;
    yyparse();
+
+   imprime_tabela(&tabela);
 
    return 0;
 }

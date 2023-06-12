@@ -9,13 +9,13 @@
 
 $DEPURA=1
 
-compilador: lex.yy.c compilador.tab.c compilador.o compilador.h tabela_simb.o
-	gcc lex.yy.c compilador.tab.c compilador.o -o compilador -ll -ly -lc
+compilador: lex.yy.c compilador.tab.c compilador.o compilador.h tabela_simb.o simbolo.o gerador_rotulos.o
+	gcc lex.yy.c compilador.tab.c compilador.o tabela_simb/tabela_simb.o tabela_simb/simbolo.o gerador_rotulos/gerador_rotulos.o -o compilador -ll -ly -lc
 
 lex.yy.c: compilador.l compilador.h
 	flex compilador.l
 
-compilador.tab.c: compilador.y compilador.h
+compilador.tab.c: compilador.y compilador.h tabela_simb.o
 	bison compilador.y -d -v -Wcounterexamples
 
 compilador.o : compilador.h compiladorF.c
@@ -23,5 +23,12 @@ compilador.o : compilador.h compiladorF.c
 
 tabela_simb.o: tabela_simb/tabela_simb.c tabela_simb/tabela_simb.h tabela_simb/simbolo.c tabela_simb/simbolo.h
 		make -C tabela_simb/
+
+simbolo.o: tabela_simb/simbolo.c tabela_simb/simbolo.h tabela_simb/simbolo.c tabela_simb/simbolo.h
+		make -C tabela_simb/
+
+gerador_rotulos.o: gerador_rotulos/gerador_rotulos.c gerador_rotulos/gerador_rotulos.h
+		make -C gerador_rotulos/
+
 clean :
 	rm -f compilador.tab.* lex.yy.c compilador.o compilador
