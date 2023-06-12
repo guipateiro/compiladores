@@ -23,7 +23,9 @@ struct simbolo remover(struct tab_simb **tabela) {
 }
 
 void coloca_tipo(struct tab_simb **tabela, int tipo, int quantidade){
-    for(unsigned int i = (*tabela)->topo-1; i <= (*tabela)->topo-(quantidade+1); i--){
+    
+    for(int i = (*tabela)->topo-1; i >= (*tabela)->topo-(quantidade); i--){
+        //printf("i = %i || (*tabela)->topo-(quantidade) = %i\n", i, (*tabela)->topo-(quantidade));
        (*tabela)->simbolos[i].conteudo.var.tipo = tipo;         
     }    
 }

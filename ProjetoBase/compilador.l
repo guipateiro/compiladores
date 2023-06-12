@@ -38,7 +38,7 @@ numero [0-9]+
 
 comentario "(*".*"*)" 
 
-tipo (integer)
+tipo (integer|boolean)
 
 valor_bool (True|False)
 

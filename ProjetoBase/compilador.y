@@ -28,7 +28,10 @@ struct pilha_rotulos *p_rotulos;
 struct rotulo rotulo_a;
 
 
-
+enum tipo_dado{
+    t_int,
+    t_bool
+};
 
 
 %}
@@ -51,6 +54,10 @@ struct rotulo rotulo_a;
 }
 
 %type <str> relacao;
+%type <int_val> fator;
+%type <int_val> termo;
+%type <int_val> expressao_simples;
+//%type <str> relacao;
 
 
 %nonassoc ELSE
@@ -107,7 +114,6 @@ bloco       :
 
 // =========== REGRA 8 ============= //
 parte_declara_vars: {num_vars = 0;
-                     num_carrega_tipo = 0;
 
                   }
 					VAR declaracao_de_vars {
@@ -123,12 +129,21 @@ parte_declara_vars: {num_vars = 0;
 declaracao_de_vars: declaracao_de_vars declaracao_de_var 
                   | declaracao_de_var
 
-declaracao_de_var: 
+declaracao_de_var: {
+                     num_carrega_tipo = 0;
+                  }
                    lista_idents DOIS_PONTOS tipo PONTO_E_VIRGULA
 
 ;
 
-tipo        : TIPO 
+tipo        : TIPO {
+                     if (!strcmp(token, "integer"))
+                        coloca_tipo(&tabela, pas_integer, num_carrega_tipo);
+                     else if (!strcmp(token, "boolean"))
+                        coloca_tipo(&tabela, pas_boolean, num_carrega_tipo);
+                     else
+                        perror("TIPO ERRADO, CORRIGE, TA ERRADO");
+                     }
 ;
 
 
@@ -286,33 +301,60 @@ relacao:
 
 // =========== REGRA 27 ============= //
 expressao_simples:
-               termo {}
+               termo {
+                  $$ = $1;
+               }
                | MAIS termo {
+                  $$ = $2;
                }
                | MENOS termo {
                   geraCodigo(NULL, "INVR");
+                  $$ = $2;
                }
                | expressao_simples MAIS termo  {
                   geraCodigo( NULL, "SOMA");
+                  $$ = $3;
                }
                | expressao_simples MENOS termo {
                    geraCodigo( NULL, "SUBT");
+                   $$ = $3;
                }
                | expressao_simples OR termo {
                    geraCodigo( NULL, "DISJ");
+                   $$ = $3;
                }
 ;
 
 termo: 
-      fator  {}
+      fator  {
+         $$ = $1;
+      }
       | termo DIV fator  {
          geraCodigo( NULL, "DIVI");
+         if ($1 == $3 && $1 == pas_integer)
+            $$ = $3;
+         else{
+            printf ("erro: expresao entre tipos incompativeis");
+            exit(1);
+         }
       }
       | termo VEZES fator  {
          geraCodigo( NULL, "MULT");
+         if ($1 == $3 && $1 == pas_integer)
+            $$ = $3;
+         else{
+            printf ("erro: expresao entre tipos incompativeis");
+            exit(1);
+         }
       }
       | termo AND fator  {
           geraCodigo( NULL, "CONJ");
+          if ($1 == $3 && $1 ==  pas_boolean)
+            $$ = $3;
+          else{
+            printf ("erro: expresao entre tipos incompativeis");
+            exit(1);
+          }
       }
 ;
 
@@ -322,6 +364,7 @@ fator:
          if((ps = busca(&tabela, token)) != NULL){
             sprintf(mepa_buf, "CRVL %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
             geraCodigo(NULL, mepa_buf);
+            $$ = ps->contudo.var.tipo;
          }else{
             printf("falha ao procurar token %s\n", token);
             exit(1);
@@ -330,11 +373,22 @@ fator:
       | NUMERO {
          sprintf (mepa_buf, "CRCT %d", atoi(token));
          geraCodigo(NULL, mepa_buf);
+         $$ = pas_integer;
       //| chamada_de_funcao
+      // $$ = tipo_retorno_funcao
       }
-      | ABRE_PARENTESES expressao_simples FECHA_PARENTESES
+      | VALOR_BOOL {
+         $$ = pas_boolean;
+      }
+      | ABRE_PARENTESES expressao_simples FECHA_PARENTESES{
+         $$ = $2;
+      }
       | NOT fator{
-         geraCodigo(NULL, "NEGA");
+         if($2 == pas_boolean)
+            geraCodigo(NULL, "NEGA");
+            $$ = $2;
+         else
+            exit(1);   
       }
 ;
 

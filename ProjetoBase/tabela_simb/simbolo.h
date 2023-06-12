@@ -10,7 +10,6 @@ enum tipo_simbolo{
 
 enum tipo_variavel{
     pas_integer,
-    pas_float,
     pas_boolean,
     undefined_type
 };

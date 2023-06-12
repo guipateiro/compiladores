@@ -7,7 +7,7 @@
 
 struct tab_simb{
     struct simbolo *simbolos;   //vetor de  simbolos, sendo usado como pilha
-    unsigned int topo;          //tamanho da pilha
+    int topo;          //tamanho da pilha
 };
 
 struct tab_simb * inicializa();
