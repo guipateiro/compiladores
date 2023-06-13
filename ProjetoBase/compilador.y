@@ -57,7 +57,7 @@ enum tipo_dado{
 %type <int_val> fator;
 %type <int_val> termo;
 %type <int_val> expressao_simples;
-//%type <str> relacao;
+%type <int_val> expressao;
 
 
 %nonassoc ELSE
@@ -215,7 +215,7 @@ comando:
          | comando_repetitivo
          | leitura
          | escrita
- 
+; 
          
  
 // =========== REGRA 19 ============= //
@@ -225,10 +225,20 @@ atribui:
                printf("ERRO: identificador nao encontrado/nao declarado");
             }
          }
-          ATRIBUICAO expressao{
-            sprintf(mepa_buf, "ARMZ %d , %d",esquerdo->nivel , esquerdo->conteudo.var.deslocamento );
-            geraCodigo(NULL, mepa_buf);
-         }
+         atribui_contiunuacao
+;
+
+atribui_contiunuacao:
+                  ATRIBUICAO expressao{
+                     if($2 == pas_integer){
+                        sprintf(mepa_buf, "ARMZ %d, %d",esquerdo->nivel , esquerdo->conteudo.var.deslocamento );
+                        geraCodigo(NULL, mepa_buf);
+                     }else{
+                        printf ("erro: expresao entre tipos incompativeis \n");
+                        exit(1);
+                     }
+                  }
+;
 
 // =========== REGRA 20 ============= //
 chamada_de_procedimento:
@@ -237,9 +247,13 @@ chamada_de_procedimento:
 // =========== REGRA 22 ============= //
 comando_condicional:
                   IF expressao {
-                     rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
-                     sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
-                     geraCodigo(NULL, mepa_buf);
+                     if($2 == pas_boolean){
+                        rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+                        sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
+                        geraCodigo(NULL, mepa_buf);
+                     }else{
+                        exit(1);
+                     }
                   }
                   THEN comando {
                      rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
@@ -265,11 +279,17 @@ comando_repetitivo:{
                         rotulo_a = gerarrotulo(&p_rotulos); //cria um rotulo mas esse e o proximo rotulo vai ser usado como fila e nao como pilha
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
                      }
-                     WHILE
+                     WHILE while_resto
+;                     
+while_resto:                     
                      expressao {
-                        rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
-                        sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
-                        geraCodigo(NULL, mepa_buf);
+                        if($1 == pas_boolean){
+                           rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+                           sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
+                           geraCodigo(NULL, mepa_buf);
+                        }else{
+                           exit(1);
+                        }   
                      }
                      DO comando{
                         rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
@@ -285,8 +305,16 @@ comando_repetitivo:{
 expressao:
             expressao_simples relacao expressao_simples{
                geraCodigo(NULL, $2);
+               if ($1 == $3)
+                  $$ = pas_boolean;
+               else{
+                  printf ("erro: expresao entre tipos incompativeis \n");
+                  exit(1);
+               }
             }
-            | expressao_simples
+            | expressao_simples {
+               $$ = $1;
+            }
 ;
 
 // =========== REGRA 26 ============= //
@@ -305,23 +333,48 @@ expressao_simples:
                   $$ = $1;
                }
                | MAIS termo {
-                  $$ = $2;
+                  if ($2 == pas_integer)
+                     $$ = $2;
+                  else{
+                     printf ("erro: expresao entre tipos incompativeis \n");
+                     exit(1);
+                  }
                }
                | MENOS termo {
                   geraCodigo(NULL, "INVR");
-                  $$ = $2;
+                  if ($2 == pas_integer)
+                     $$ = $2;
+                  else{
+                     printf ("erro: expresao entre tipos incompativeis \n");
+                     exit(1);
+                  }
                }
                | expressao_simples MAIS termo  {
                   geraCodigo( NULL, "SOMA");
-                  $$ = $3;
+                  if ($1 == $3 && $1 == pas_integer)
+                     $$ = $3;
+                  else{
+                     printf ("erro: expresao entre tipos incompativeis \n");
+                     exit(1);
+                  }
                }
                | expressao_simples MENOS termo {
-                   geraCodigo( NULL, "SUBT");
-                   $$ = $3;
+                  geraCodigo( NULL, "SUBT");
+                  if ($1 == $3 && $1 == pas_integer)
+                     $$ = $3;
+                  else{
+                     printf ("erro: expresao entre tipos incompativeis \n");
+                     exit(1);
+                  }
                }
                | expressao_simples OR termo {
-                   geraCodigo( NULL, "DISJ");
-                   $$ = $3;
+                  geraCodigo( NULL, "DISJ");
+                  if ($1 == $3 && $1 == pas_boolean)
+                     $$ = $3;
+                  else{
+                     printf ("erro: expresao entre tipos incompativeis \n");
+                     exit(1);
+                  }
                }
 ;
 
@@ -334,7 +387,7 @@ termo:
          if ($1 == $3 && $1 == pas_integer)
             $$ = $3;
          else{
-            printf ("erro: expresao entre tipos incompativeis");
+            printf ("erro: expresao entre tipos incompativeis \n");
             exit(1);
          }
       }
@@ -343,16 +396,16 @@ termo:
          if ($1 == $3 && $1 == pas_integer)
             $$ = $3;
          else{
-            printf ("erro: expresao entre tipos incompativeis");
+            printf ("erro: expresao entre tipos incompativeis \n");
             exit(1);
          }
       }
       | termo AND fator  {
           geraCodigo( NULL, "CONJ");
-          if ($1 == $3 && $1 ==  pas_boolean)
+          if ($1 == $3 && $1 == pas_boolean)
             $$ = $3;
           else{
-            printf ("erro: expresao entre tipos incompativeis");
+            printf ("erro: expresao entre tipos incompativeis \n");
             exit(1);
           }
       }
@@ -362,9 +415,9 @@ fator:
       IDENT {
          printf("buscando token %s\n", token);
          if((ps = busca(&tabela, token)) != NULL){
-            sprintf(mepa_buf, "CRVL %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
+            sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
             geraCodigo(NULL, mepa_buf);
-            $$ = ps->contudo.var.tipo;
+            $$ = ps->conteudo.var.tipo;
          }else{
             printf("falha ao procurar token %s\n", token);
             exit(1);
@@ -384,9 +437,10 @@ fator:
          $$ = $2;
       }
       | NOT fator{
-         if($2 == pas_boolean)
+         if($2 == pas_boolean){
             geraCodigo(NULL, "NEGA");
             $$ = $2;
+         }   
          else
             exit(1);   
       }
@@ -415,7 +469,7 @@ parametro_leitura:
                      geraCodigo(NULL, "LEIT");
                      printf("buscando token %s\n", token);
                      if((ps = busca(&tabela, token)) != NULL){
-                        sprintf(mepa_buf, "ARMZ %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
+                        sprintf(mepa_buf, "ARMZ %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
                         geraCodigo(NULL, mepa_buf);
                      }else{
                         printf("falha ao procurar token %s\n", token);
@@ -439,7 +493,7 @@ parametro_escrita:
                   IDENT {
                      printf("buscando token %s\n", token);
                      if((ps = busca(&tabela, token)) != NULL){
-                        sprintf(mepa_buf, "CRVL %d , %d",ps->nivel , ps->conteudo.var.deslocamento );
+                        sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
                         geraCodigo(NULL, mepa_buf);
                         geraCodigo(NULL, "IMPR");
                      }else{
