@@ -363,20 +363,20 @@ struct yy_trans_info
 static const flex_int16_t yy_accept[137] =
     {   0,
         0,    0,   49,   48,    2,    1,   13,   14,   38,   36,
-       11,   37,   12,   47,   10,    9,   34,   35,   33,   45,
-       45,   45,   27,   28,   45,   45,   45,   45,   45,   45,
-       45,   45,   45,   45,   45,   45,   45,   45,   45,    2,
-        0,   47,    8,   40,   39,   41,   45,   45,   45,   45,
-       45,   45,   45,   45,   24,   45,   45,   45,   45,   20,
-       45,   45,   45,   26,   32,   45,   45,   45,   45,   45,
-       45,   45,    0,    0,   45,   45,   30,   45,   45,   45,
-       29,   45,    7,   45,   45,   45,   45,   31,   45,   45,
-       45,   45,    5,   45,   45,    3,   45,   45,   45,   45,
+       11,   37,   12,   46,   10,    9,   34,   35,   33,   47,
+       47,   47,   27,   28,   47,   47,   47,   47,   47,   47,
+       47,   47,   47,   47,   47,   47,   47,   47,   47,    2,
+        0,   46,    8,   40,   39,   41,   47,   47,   47,   47,
+       47,   47,   47,   47,   24,   47,   47,   47,   47,   20,
+       47,   47,   47,   26,   32,   47,   47,   47,   47,   47,
+       47,   47,    0,    0,   47,   47,   30,   47,   47,   47,
+       29,   47,    7,   47,   47,   47,   47,   31,   47,   47,
+       47,   47,    5,   47,   47,    3,   47,   45,   47,   47,
 
-       45,   22,   45,   19,   45,   45,   45,   45,   42,   21,
-       16,   45,   45,   25,    6,   45,   45,   45,   15,   45,
-       45,   23,   43,   45,   45,   45,   45,   45,   44,   45,
-       45,    4,   18,   45,   17,    0
+       47,   22,   47,   19,   47,   47,   47,   47,   42,   21,
+       16,   47,   47,   25,    6,   47,   47,   47,   15,   47,
+       47,   23,   43,   47,   47,   47,   47,   47,   44,   47,
+       47,    4,   18,   47,   17,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -1213,29 +1213,29 @@ YY_RULE_SETUP
 case 45:
 YY_RULE_SETUP
 #line 302 "compilador.l"
-{ simbolo = simb_identificador;
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" ident  ");
-          return IDENT;
-        }
-	YY_BREAK
-case 46:
-YY_RULE_SETUP
-#line 308 "compilador.l"
 { simbolo = simb_valor_bool;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" valor bool ");
           return VALOR_BOOL;
 		}
 	YY_BREAK
-case 47:
+case 46:
 YY_RULE_SETUP
-#line 314 "compilador.l"
+#line 308 "compilador.l"
 { simbolo =  simb_numero;
             strncpy(token, yytext, TAM_TOKEN);
             IMPRIME (" numero ");
             return NUMERO;
         }	
+	YY_BREAK
+case 47:
+YY_RULE_SETUP
+#line 314 "compilador.l"
+{ simbolo = simb_identificador;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" ident  ");
+          return IDENT;
+        }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP

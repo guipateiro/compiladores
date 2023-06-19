@@ -32,8 +32,6 @@ pulo_linha [\n]
 
 descarte [\t ]+
 
-ident [a-zA-Z][a-zA-Z0-9]*
-
 numero [0-9]+
 
 comentario "(*".*"*)" 
@@ -41,6 +39,8 @@ comentario "(*".*"*)"
 tipo (integer|boolean)
 
 valor_bool (True|False)
+
+ident [a-zA-Z][a-zA-Z0-9]*
 
 %%
 
@@ -299,12 +299,6 @@ write { simbolo = simb_write;
           return TIPO;
 		}
 
-{ident} { simbolo = simb_identificador;
-          strncpy (token, yytext, TAM_TOKEN);
-          IMPRIME(" ident  ");
-          return IDENT;
-        }
-
 {valor_bool} { simbolo = simb_valor_bool;
           strncpy (token, yytext, TAM_TOKEN);
           IMPRIME(" valor bool ");
@@ -316,6 +310,12 @@ write { simbolo = simb_write;
             IMPRIME (" numero ");
             return NUMERO;
         }	
+
+{ident} { simbolo = simb_identificador;
+          strncpy (token, yytext, TAM_TOKEN);
+          IMPRIME(" ident  ");
+          return IDENT;
+        }
 
 
 %%

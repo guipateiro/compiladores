@@ -23,6 +23,8 @@ struct tab_simb *tabela;
 struct simbolo s;
 struct simbolo *ps;
 struct simbolo *esquerdo;
+int esquerdo_recursao_func = 0;
+struct simbolo *esquerdo_func[10];
 int num_vars_por_nivel[10];
 struct pilha_rotulos *p_rotulos;
 struct rotulo rotulo_a;
@@ -58,10 +60,14 @@ enum tipo_dado{
 %type <int_val> termo;
 %type <int_val> expressao_simples;
 %type <int_val> expressao;
+%type <int_val> parametros_ou_nada;
+%type <int_val> funcao_ou_ident;
+%type <int_val> parametro_func;
 
 
-%nonassoc ELSE
-%nonassoc "lower_then_else"
+
+%nonassoc ELSE;
+%nonassoc "lower_then_else";
 
 %%
 
@@ -208,9 +214,14 @@ comandos:
 
 // =========== REGRA 18 ============= //
 comando: 
-         atribui {
-         //| chamada_de_procedimento
-         }| comando_composto
+         atribui  {printf("ATRIBUICAO ESCOLHIDA \n");}
+         /*| funcao_ou_ident {
+            if (esquerdo_func[esquerdo_recursao_func+1]->categoria == parametro || esquerdo_func[esquerdo_recursao_func+1]->categoria == variavel){
+               printf("ERRO: variavel sendo usada como funcao\n");
+               exit(1);
+            }
+         }*/
+         | comando_composto
          | comando_condicional
          | comando_repetitivo
          | leitura
@@ -222,7 +233,8 @@ comando:
 atribui:
          IDENT {
             if((esquerdo = busca(&tabela, token)) == NULL){
-               printf("ERRO: identificador nao encontrado/nao declarado");
+               printf("ERRO: identificador {%s} nao encontrado/nao declarado", token );
+               exit(1);
             }
          }
          atribui_contiunuacao
@@ -230,19 +242,130 @@ atribui:
 
 atribui_contiunuacao:
                   ATRIBUICAO expressao{
-                     if($2 == pas_integer){
-                        sprintf(mepa_buf, "ARMZ %d, %d",esquerdo->nivel , esquerdo->conteudo.var.deslocamento );
-                        geraCodigo(NULL, mepa_buf);
-                     }else{
-                        printf ("erro: expresao entre tipos incompativeis \n");
-                        exit(1);
-                     }
+                     if(esquerdo->categoria == variavel){
+                        if($2 == esquerdo->conteudo.var.tipo){
+                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo->nivel , esquerdo->conteudo.var.deslocamento );
+                           geraCodigo(NULL, mepa_buf);
+                        }else{
+                           printf ("erro: expresao entre tipos incompativeis \n");
+                           exit(1);
+                        }
+                     }else if (esquerdo->categoria == parametro){
+                        if($2 == esquerdo->conteudo.param.tipo){
+                           if (esquerdo->conteudo.param.passagem == parametro_copia ){
+                              sprintf(mepa_buf, "ARMZ %d, %d",esquerdo->nivel , esquerdo->conteudo.param.deslocamento );
+                              geraCodigo(NULL, mepa_buf);
+                           }else if (esquerdo->conteudo.param.passagem == parametro_ref){
+                              sprintf(mepa_buf, "ARMI %d, %d",esquerdo->nivel , esquerdo->conteudo.param.deslocamento );
+                              geraCodigo(NULL, mepa_buf);
+                           }
+                        }else {
+                           printf ("erro: expresao entre tipos incompativeis \n");
+                           exit(1);
+                        }
+                     } 
                   }
 ;
 
 // =========== REGRA 20 ============= //
-chamada_de_procedimento:
+funcao_ou_ident:
+               IDENT {
+                  if((esquerdo_func[esquerdo_recursao_func] = busca(&tabela, token)) == NULL){
+                        printf("falha ao procurar token %s\n", token);
+                     exit(1);
+                  }
+                  esquerdo_recursao_func++;  //evita de esquerdo_func se sobrescrito dentro de uma chamada recursiva de funcao_ou_ident
+               }
+               parametros_ou_nada{
+                  if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
+                     sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.deslocamento );
+                     geraCodigo(NULL, mepa_buf);
+                     $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo;
+                  }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
+                     if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia){
+                        sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                        geraCodigo(NULL, mepa_buf);
+                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                     }else if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
+                        sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                        geraCodigo(NULL, mepa_buf);
+                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                     }
+                  }
+                  esquerdo_recursao_func--;
+               }
 ;
+
+parametros_ou_nada:
+                 ABRE_PARENTESES lista_params FECHA_PARENTESES {
+                 if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao || esquerdo_func[esquerdo_recursao_func-1]->categoria == procedimento){
+                     $$ = undefined_type; //caso seja procedure
+                     if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao){
+                        geraCodigo(NULL, "AMEM 1");
+                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                     }
+                     sprintf(mepa_buf, "CHPR R%02d, %d", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.rotulo , nivel_lexico );
+                     geraCodigo(NULL, mepa_buf);
+                  }else{
+                     printf("ERRO: {%s} nao eh funcao ou procedimento\n", esquerdo_func[esquerdo_recursao_func-1]->identificador);
+                     exit(1);
+                  }
+                }
+                | {
+                  if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao || esquerdo_func[esquerdo_recursao_func-1]->categoria == procedimento){
+                     $$ = undefined_type; //caso seja procedure
+                     if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao){
+                        geraCodigo(NULL, "AMEM 1");
+                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                     }
+                     sprintf(mepa_buf, "CHPR R%02d, %d", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.rotulo , nivel_lexico );
+                     geraCodigo(NULL, mepa_buf);
+                  }
+                }
+;
+
+lista_params:
+               lista_params VIRGULA expressao
+               | expressao
+;
+
+parametro_func:
+         IDENT {
+            if((ps = busca(&tabela, token)) != NULL){
+               if (ps->categoria == variavel){
+                  sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
+                  geraCodigo(NULL, mepa_buf);
+                  $$ = ps->conteudo.var.tipo;
+               }else if (ps->categoria == parametro){
+                  if(ps->conteudo.param.passagem == parametro_copia){
+                     sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.param.deslocamento );
+                     geraCodigo(NULL, mepa_buf);
+                     $$ = ps->conteudo.param.tipo;
+                  }else if(ps->conteudo.param.passagem == parametro_ref){
+                     sprintf(mepa_buf, "CRVI %d, %d",ps->nivel , ps->conteudo.param.deslocamento );
+                     geraCodigo(NULL, mepa_buf);
+                     $$ = ps->conteudo.param.tipo;
+                  }
+               }else{
+                  printf("ERRO: chamada de funcao dentro de chamada de funcao superou o limite da recusao de 2\n");
+               }
+            }   
+         }
+         | NUMERO {
+            sprintf (mepa_buf, "CRCT %d", atoi(token));
+            geraCodigo(NULL, mepa_buf);
+            $$ = pas_integer;
+         }   
+         | VALOR_BOOL {
+            if(strcmp(token, "True") == 0)
+               sprintf (mepa_buf, "CRCT %d", 1);
+            else
+               sprintf (mepa_buf, "CRCT %d", 0);
+            geraCodigo(NULL, mepa_buf);
+            $$ = pas_boolean;
+         }
+;
+
 
 // =========== REGRA 22 ============= //
 comando_condicional:
@@ -412,25 +535,20 @@ termo:
 ;
 
 fator:
-      IDENT {
-         printf("buscando token %s\n", token);
-         if((ps = busca(&tabela, token)) != NULL){
-            sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
-            geraCodigo(NULL, mepa_buf);
-            $$ = ps->conteudo.var.tipo;
-         }else{
-            printf("falha ao procurar token %s\n", token);
-            exit(1);
-         }
+      funcao_ou_ident {
+        $$ = $1;
       }
       | NUMERO {
          sprintf (mepa_buf, "CRCT %d", atoi(token));
          geraCodigo(NULL, mepa_buf);
          $$ = pas_integer;
-      //| chamada_de_funcao
-      // $$ = tipo_retorno_funcao
-      }
+      }   
       | VALOR_BOOL {
+         if(strcmp(token, "True") == 0)
+            sprintf (mepa_buf, "CRCT %d", 1);
+         else
+            sprintf (mepa_buf, "CRCT %d", 0);
+         geraCodigo(NULL, mepa_buf);
          $$ = pas_boolean;
       }
       | ABRE_PARENTESES expressao_simples FECHA_PARENTESES{
@@ -445,12 +563,6 @@ fator:
             exit(1);   
       }
 ;
-
-chamada_de_funcao:
-                IDENT ABRE_PARENTESES lista_params FECHA_PARENTESES 
-;
-
-lista_params:;
 
 
 
@@ -490,20 +602,14 @@ parametros_de_escrita:
 ;
 
 parametro_escrita:
-                  IDENT {
-                     printf("buscando token %s\n", token);
-                     if((ps = busca(&tabela, token)) != NULL){
-                        sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
-                        geraCodigo(NULL, mepa_buf);
+                  expressao_simples {
+                     if ($1 != undefined_type)
                         geraCodigo(NULL, "IMPR");
-                     }else{
-                        printf("falha ao procurar token %s\n", token);
-                        exit(1);
-                     }
-                  //| chamada_de_funcao{
-
-                    // }
+                     else {
+                        printf("parametro incompativel\n");
+                     }   
                   }
+
 ;
 
 

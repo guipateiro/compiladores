@@ -22,32 +22,32 @@ enum tipo_passagem{
 
 /* Três tipos de símbolos */
 struct variavel{
-    int tipo;
+    int tipo;               //tipo_variavel
     int deslocamento;
 };
 
 struct parametro{
-    int tipo;
+    int tipo;           //tipo_bvariavel
     int deslocamento;
-    int passagem;
+    int passagem;       //tipo_passagem
 };
 
 struct procedimento{
-    int rotulo;
-    int qtd_parametros;
-    struct parametro lista[128];
+    int rotulo;             //rotulo de desvi
+    int qtd_parametros;     //numero de parametros
+    struct parametro lista[128];   //informacoes de cada parametro
 };
 
 /*------------------------*/
 
 struct simbolo{
-    char *identificador;
-    int categoria;
-    int nivel;
+    char *identificador;    //nome da variavel
+    int categoria;          // tipo_simbolo
+    int nivel;              // nivel lexico
     struct cat_conteudo{
-        struct variavel var;
-        struct parametro param;
-        struct procedimento proc;
+        struct variavel var;           //variavel //funcao
+        struct parametro param;        //parametro
+        struct procedimento proc;      //procedimento //funcao
     } conteudo;
 };
 
