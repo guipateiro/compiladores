@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 3.8.2.  */
+/* A Bison parser, made by GNU Bison 3.7.5.  */
 
 /* Bison interface for Yacc-like parsers in C
 
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -97,7 +97,8 @@ extern int yydebug;
     MENOS = 298,                   /* MENOS  */
     VEZES = 299,                   /* VEZES  */
     READ = 300,                    /* READ  */
-    WRITE = 301                    /* WRITE  */
+    WRITE = 301,                   /* WRITE  */
+    LOWER_THAN_ELSE = 302          /* LOWER_THAN_ELSE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -112,7 +113,7 @@ union YYSTYPE
    int int_val; // define o tipo int_val
    struct simbolo *simb;
 
-#line 116 "compilador.tab.h"
+#line 117 "compilador.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -123,8 +124,6 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
-
 int yyparse (void);
-
 
 #endif /* !YY_YY_COMPILADOR_TAB_H_INCLUDED  */
