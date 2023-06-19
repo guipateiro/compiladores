@@ -164,10 +164,30 @@ parte_declara_sub_rotinas:
 ;
 
 declara_procedimento:
-                     PROCEDURE IDENT ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
-                     | PROCEDURE IDENT PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
+                     PROCEDURE IDENT  {
+                        rotulo_a = gerarrotulo(&p_rotulos);
+                        nivel_lexico++;
+                        sprintf(mepa_buf, "ENPR %d", nivel_lexico);
+                        geraCodigo(rotulo_a.rotulo, mepa_buf);
+                        cria_simbolo(rotulo_a, 0,0,0); //preencher isso direito
+
+                     } declara_procedimento_cont {
+                        rotulo_a = gerarrotulo(&p_rotulos);
+                        sprintf(mepa_buf, "RTPR %d %d", nivel_lexico, tabela->topo); //tem que apontar pra stack
+                        //diminuir stack aqui tbm, n sei como
+                        //remover(&tabela, );
+                        geraCodigo(rotulo_a.rotulo, mepa_buf); 
+                        nivel_lexico--;
+                     }
+;
+// talvez precise de DMEM no final aqui
+
+declara_procedimento_cont:
+      ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
+      | PONTO_E_VIRGULA bloco PONTO_E_VIRGULA 
 ;
 
+// AMEM 1 AQUI TALVEZ??
 declara_function:
                FUNCTION IDENT ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES DOIS_PONTOS TIPO PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
                | FUNCTION IDENT DOIS_PONTOS TIPO PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
@@ -217,6 +237,20 @@ atribui:
 
 // =========== REGRA 20 ============= //
 chamada_de_procedimento:
+         IDENT {
+            
+         }
+         params_ou_nada {
+            sprintf(mepa_buf, "CHPR %s %d", rotulo(socorro), nivel_lexico);
+         }
+;
+
+params_ou_nada:
+         ABRE_PARENTESES lista_params  FECHA_PARENTESES {
+            //aqui tem que carregar todas as vars
+            //e pegar o simbolo do procedimento
+         }
+         |
 ;
 
 // =========== REGRA 22 ============= //
