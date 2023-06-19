@@ -68,6 +68,7 @@ enum tipo_dado{
 %type <int_val> expressao;
 %type <int_val> parametros_ou_nada;
 %type <int_val> funcao_ou_ident;
+%type <int_val> empilha_retorno
 
 
 
@@ -442,6 +443,7 @@ if_then:
          IF expressao {
             if($2 == pas_boolean){
                rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+                rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
                sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
                geraCodigo(NULL, mepa_buf);
             }else{
@@ -449,18 +451,17 @@ if_then:
             }
          }
          THEN comando {
-            rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+            rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
             sprintf(mepa_buf, "DSVS %s",rotulo_a.rotulo);
             geraCodigo(NULL, mepa_buf);
-            rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
+            rotulo_a = pegarrotulo(&p_rotulos);
             geraCodigo (rotulo_a.rotulo, "NADA"); 
          }
 cond_else:
                   else_ou_nada{
                         fprintf(stderr, "TERMONOU O BHUR \n");
-                        rotulo_a = p_rotulos->pilha[p_rotulos->topo-1];
+                        rotulo_a = pegarrotulo(&p_rotulos);
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
-                        remove_n(&p_rotulos, 2);
                   }
 ;
 
