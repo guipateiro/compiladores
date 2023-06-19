@@ -68,6 +68,8 @@ enum tipo_dado{
 %type <int_val> expressao;
 %type <int_val> parametros_ou_nada;
 %type <int_val> funcao_ou_ident;
+%type <int_val> empilha_retorno;
+
 
 
 
@@ -164,10 +166,7 @@ tipo        : TIPO {
 
 // =========== REGRA 10 ============= //
 lista_idents: lista_idents VIRGULA IDENT {
-               cc.var.deslocamento = num_vars;
-               printf("adicionado token [%s]\n", token);
-               s = cria_simbolo(token, variavel, nivel_lexico, cc);
-               adicionar(&tabela, s);
+               
                num_carrega_tipo++;
                num_vars++;
                num_vars_por_nivel[nivel_lexico]++;
@@ -226,18 +225,18 @@ declara_procedimento:
                        // rot_num++; // para o desvio de procedures dentro dessa procedure
                         //pilha_int_empilhar(&pilha_amem, num_params);
 
-                     } PONTO_E_VIRGULA bloco{
-
+                     } PONTO_E_VIRGULA {imprime_tabela(&tabela);} bloco{
+                           
                            sprintf(mepa_buf, "DMEM %d", pilha_num_vars[ponteiro_pilha_num_vars]);
                            ponteiro_pilha_num_vars--;
-                           sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, 9999);
+                           sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, num_params);
                            geraCodigo(NULL, mepa_buf);
                            rotulo_a = pegarrotulo(&p_rotulos);
-                     } PONTO_E_VIRGULA
+                     } PONTO_E_VIRGULA 
 ;
 
 parametros_formais_ou_nada:
-               ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES
+               ABRE_PARENTESES lista_params_formais FECHA_PARENTESES
                |
 ;
 
@@ -279,15 +278,42 @@ declara_function:
 
 ; 
 
-
-lista_paramentro_formais:
-                        lista_paramentro_formais VIRGULA parametro
-                        | parametro
+lista_params_formais:   {num_params = 0;}
+                        lista_params_formais VIRGULA parametro {num_params++;}
+                        | parametro {num_params++;}
 ;
 
 parametro:
-         VAR IDENT DOIS_PONTOS TIPO
-         |  IDENT DOIS_PONTOS TIPO
+         VAR IDENT {
+            cc.param.passagem = parametro_ref;
+            printf("adicionado token [%s]\n", token);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+         } DOIS_PONTOS TIPO {
+            if (!strcmp(token, "integer"))
+               s.conteudo.param.tipo = pas_integer;
+            else if (!strcmp(token, "boolean"))
+               s.conteudo.param.tipo = pas_boolean;
+            else {
+               fprintf(stderr, "Tipo do parametro formal invalido\n");
+               exit(1);
+            }
+            adicionar(&tabela, s);
+         } 
+         |  IDENT {
+            cc.param.passagem = parametro_copia;
+            printf("adicionado token [%s]\n", token);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+         } DOIS_PONTOS TIPO {
+            if (!strcmp(token, "integer"))
+               s.conteudo.param.tipo = pas_integer;
+            else if (!strcmp(token, "boolean"))
+               s.conteudo.param.tipo = pas_boolean;
+            else {
+               fprintf(stderr, "Tipo do parametro formal invalido\n");
+               exit(1);
+            }
+            adicionar(&tabela, s);
+         }
 ;
 
 // =========== REGRA 17 ============= //
