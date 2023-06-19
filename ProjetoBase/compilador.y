@@ -20,14 +20,18 @@ int nivel_lexico;
 int num_carrega_tipo;
 struct cat_conteudo cc;
 struct tab_simb *tabela;
-struct simbolo s;
+struct simbolo s ,lista_simbolos[128];
+struct parametro lista_parametros[128];
 struct simbolo *ps;
 struct simbolo *esquerdo;
 int esquerdo_recursao_func = 0;
-struct simbolo *esquerdo_func[10];
+struct simbolo *esquerdo_func[100];
 int num_vars_por_nivel[10];
 struct pilha_rotulos *p_rotulos;
 struct rotulo rotulo_a;
+int num_params;
+char proc_name[128];
+struct cat_conteudo conteudo;
 
 
 enum tipo_dado{
@@ -101,13 +105,15 @@ input_idents: IDENT VIRGULA IDENT
 bloco       :
             parte_declara_vars
             {
-            printf("COISA DE TESTE \n");
+            fprintf(stderr,"COISA DE TESTE \n");
             rotulo_a = gerarrotulo(&p_rotulos);
             sprintf(mepa_buf, "DSVS %s", rotulo_a.rotulo);
             geraCodigo (NULL, mepa_buf);
+            nivel_lexico++;
             }
             parte_declara_sub_rotinas
             {
+            nivel_lexico --;
             rotulo_a = pegarrotulo(&p_rotulos);
             geraCodigo (rotulo_a.rotulo, "NADA");
             }
@@ -185,8 +191,47 @@ parte_declara_sub_rotinas:
 ;
 
 declara_procedimento:
-                     PROCEDURE IDENT ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
-                     | PROCEDURE IDENT PONTO_E_VIRGULA bloco PONTO_E_VIRGULA
+                     PROCEDURE IDENT {
+                        strcpy(proc_name, token);
+                        num_params = 0;
+                     }
+                     parametros_formais_ou_nada {
+                        rotulo_a = gerarrotulo(&p_rotulos);
+                        sprintf(mepa_buf, "ENPR %d", nivel_lexico);
+                        geraCodigo(rotulo_a.rotulo, mepa_buf);
+
+                        conteudo.proc.rotulo = rotulo_a.rotulo;
+                        conteudo.proc.qtd_parametros = num_params;
+
+                        memcpy(conteudo.proc.lista, lista_parametros, sizeof(struct parametro)*num_params);
+                        
+                        // for(int i = 0; i < num_params; ++i){
+                        //    printf("proc.lista[%d] tem tipo %d e passado por %d \n", i, ti.proc.lista[i].tipo, ti.proc.lista[i].passagem);
+                        // }
+                        printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, conteudo.var.deslocamento);
+
+                        s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo);
+
+                        adicionar(&tabela, s);
+
+                        // atribui o deslocamento correto e coloca na pilha os símbolos
+                        for(int i = num_params-1; i >= 0; --i){
+                           lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
+                           printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
+                           adicionar(&tabela, lista_simbolos[i]);
+                        }
+                       // rot_num++; // para o desvio de procedures dentro dessa procedure
+                        //pilha_int_empilhar(&pilha_amem, num_params);
+
+                     } PONTO_E_VIRGULA bloco{
+                           sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, 9999);
+                           geraCodigo(NULL, mepa_buf);
+                     } PONTO_E_VIRGULA
+;
+
+parametros_formais_ou_nada:
+               ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES
+               |
 ;
 
 declara_function:
@@ -214,13 +259,7 @@ comandos:
 
 // =========== REGRA 18 ============= //
 comando: 
-         atribui  {printf("ATRIBUICAO ESCOLHIDA \n");}
-         /*| funcao_ou_ident {
-            if (esquerdo_func[esquerdo_recursao_func+1]->categoria == parametro || esquerdo_func[esquerdo_recursao_func+1]->categoria == variavel){
-               printf("ERRO: variavel sendo usada como funcao\n");
-               exit(1);
-            }
-         }*/
+         atribui_ou_func  {printf("ATRIBUICAO/FUNCAO ESCOLHIDA \n");}
          | comando_composto
          | comando_condicional
          | comando_repetitivo
@@ -230,33 +269,44 @@ comando:
          
  
 // =========== REGRA 19 ============= //
-atribui:
+atribui_ou_func:
          IDENT {
-            if((esquerdo = busca(&tabela, token)) == NULL){
+            if((esquerdo_func[esquerdo_recursao_func] = busca(&tabela, token)) == NULL){
                printf("ERRO: identificador {%s} nao encontrado/nao declarado", token );
                exit(1);
             }
+            esquerdo_recursao_func++;
+            printf("INDO PARA O ATRIBUI OU PARAMETROS\n");
          }
-         atribui_contiunuacao
+         continua_atibui_ou_func{
+            esquerdo_recursao_func--;
+         }
 ;
 
-atribui_contiunuacao:
-                  ATRIBUICAO expressao{
-                     if(esquerdo->categoria == variavel){
-                        if($2 == esquerdo->conteudo.var.tipo){
-                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo->nivel , esquerdo->conteudo.var.deslocamento );
+continua_atibui_ou_func:
+                  ATRIBUICAO atribui_contiunuacao {printf("ATRIBUICAO ESCOLHIDA \n");}
+                  | parametros_ou_nada {printf("FUNCAO ESCOLHIDA \n");}
+;
+
+
+atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA \n");}
+                   expressao{
+                     
+                     if(esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
+                        if($2 == esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo){
+                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.deslocamento );
                            geraCodigo(NULL, mepa_buf);
                         }else{
                            printf ("erro: expresao entre tipos incompativeis \n");
                            exit(1);
                         }
-                     }else if (esquerdo->categoria == parametro){
-                        if($2 == esquerdo->conteudo.param.tipo){
-                           if (esquerdo->conteudo.param.passagem == parametro_copia ){
-                              sprintf(mepa_buf, "ARMZ %d, %d",esquerdo->nivel , esquerdo->conteudo.param.deslocamento );
+                     }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
+                        if($2 == esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo){
+                           if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia ){
+                              sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
                               geraCodigo(NULL, mepa_buf);
-                           }else if (esquerdo->conteudo.param.passagem == parametro_ref){
-                              sprintf(mepa_buf, "ARMI %d, %d",esquerdo->nivel , esquerdo->conteudo.param.deslocamento );
+                           }else if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
+                              sprintf(mepa_buf, "ARMI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
                               geraCodigo(NULL, mepa_buf);
                            }
                         }else {
@@ -266,6 +316,8 @@ atribui_contiunuacao:
                      } 
                   }
 ;
+
+
 
 // =========== REGRA 20 ============= //
 funcao_ou_ident:
@@ -304,7 +356,11 @@ parametros_ou_nada:
                         geraCodigo(NULL, "AMEM 1");
                         $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }
-                     sprintf(mepa_buf, "CHPR R%02d, %d", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.rotulo , nivel_lexico );
+                     if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros != num_params){
+                        printf("ERRO: numero errado de parametros\n");
+                        exit(1);
+                     }
+                     sprintf(mepa_buf, "CHPR %s, %d", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.rotulo , nivel_lexico );
                      geraCodigo(NULL, mepa_buf);
                   }else{
                      printf("ERRO: {%s} nao eh funcao ou procedimento\n", esquerdo_func[esquerdo_recursao_func-1]->identificador);
@@ -318,15 +374,15 @@ parametros_ou_nada:
                         geraCodigo(NULL, "AMEM 1");
                         $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }
-                     sprintf(mepa_buf, "CHPR R%02d, %d", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.rotulo , nivel_lexico );
+                     sprintf(mepa_buf, "CHPR %s, %d", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.rotulo , nivel_lexico );
                      geraCodigo(NULL, mepa_buf);
                   }
                 }
 ;
 
-lista_params:
-               lista_params VIRGULA expressao
-               | expressao
+lista_params:  {num_params = 0;}
+               lista_params VIRGULA expressao {num_params++;}
+               | expressao {num_params++;}
 ;
 
 parametro_func:
@@ -386,6 +442,7 @@ comando_condicional:
                      geraCodigo (rotulo_a.rotulo, "NADA"); 
                   }
                   else_ou_nada{
+                        fprintf(stderr, "TERMONOU O ELSE \n");
                         rotulo_a = p_rotulos->pilha[p_rotulos->topo-1];
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
                         remove_n(&p_rotulos, 2);

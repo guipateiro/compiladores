@@ -33,7 +33,7 @@ struct parametro{
 };
 
 struct procedimento{
-    int rotulo;             //rotulo de desvi
+    char* rotulo;             //rotulo de desvi
     int qtd_parametros;     //numero de parametros
     struct parametro lista[128];   //informacoes de cada parametro
 };

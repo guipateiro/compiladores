@@ -1,4 +1,26 @@
      INPP
-     AMEM 5
+     AMEM 2
      DSVS R00
-R00: NADA 
+R01: ENPR 1 
+     AMEM 1
+     DSVS R02
+R03: ENPR 2 
+     AMEM 1
+     DSVS R04
+R04: NADA 
+     CRVL 1, 0
+     CRCT 1
+     SUBT
+     ARMZ 2, 0
+     CRVL 0, 0
+     CRCT 1
+     SUBT
+     ARMZ 0, 0
+     CRVL 2, 0
+     CRCT 1
+     CMIG
+     DSVF R05
+     CHPR R01, 2
+     DSVS R06
+R05: NADA 
+R06: NADA 

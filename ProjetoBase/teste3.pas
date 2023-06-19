@@ -1,5 +1,6 @@
 program exemplo7(input, output);
 var x, y :  integer;
+
 procedure p;
 var z : integer;
 begin
