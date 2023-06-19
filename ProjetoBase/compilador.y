@@ -166,7 +166,10 @@ tipo        : TIPO {
 
 // =========== REGRA 10 ============= //
 lista_idents: lista_idents VIRGULA IDENT {
-               
+               cc.var.deslocamento = num_vars;
+               printf("adicionado token [%s]\n", token);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
                num_vars_por_nivel[nivel_lexico]++;
@@ -217,11 +220,11 @@ declara_procedimento:
                         adicionar(&tabela, s);
 
                         // atribui o deslocamento correto e coloca na pilha os símbolos
-                        for(int i = num_params-1; i >= 0; --i){
-                           lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
-                           printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
-                           adicionar(&tabela, lista_simbolos[i]);
-                        }
+                        //for(int i = num_params-1; i >= 0; --i){
+                           //lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
+                           //printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
+                           //adicionar(&tabela, lista_simbolos[i]);
+                        //}
                        // rot_num++; // para o desvio de procedures dentro dessa procedure
                         //pilha_int_empilhar(&pilha_amem, num_params);
 
@@ -423,6 +426,7 @@ parametros_ou_nada:
                         $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }
                      if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros != num_params){
+                        printf("%d %d\n", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros, num_params);
                         printf("ERRO: numero errado de parametros\n");
                         exit(1);
                      }
@@ -454,9 +458,9 @@ empilha_retorno:  {
                   }
 ;
 
-lista_params:  {num_params = 0;}
-               lista_params VIRGULA expressao {num_params++;}
-               //| expressao {num_params++;}
+lista_params:  {num_params = 0;printf("TA EM ZERO\n");}
+               lista_params VIRGULA expressao {num_params++; printf("%dAMAMA\n",num_params);}
+               | {printf("%d\n",num_params); }expressao {num_params++; printf("%dSUGA\n",num_params);}
 ;
 
 // =========== REGRA 22 ============= //
