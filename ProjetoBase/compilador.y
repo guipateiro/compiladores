@@ -66,12 +66,11 @@ enum tipo_dado{
 %type <int_val> expressao;
 %type <int_val> parametros_ou_nada;
 %type <int_val> funcao_ou_ident;
-%type <int_val> parametro_func;
 
 
 
 %nonassoc ELSE;
-%nonassoc "lower_then_else";
+%nonassoc LOWER_THAN_ELSE
 
 %%
 
@@ -224,8 +223,9 @@ declara_procedimento:
                         //pilha_int_empilhar(&pilha_amem, num_params);
 
                      } PONTO_E_VIRGULA bloco{
-                           sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, 9999);
+                           sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, 9999); //numero de varaiveis que devem e desalocadas
                            geraCodigo(NULL, mepa_buf);
+                           rotulo_a = pegarrotulo(&p_rotulos);
                      } PONTO_E_VIRGULA
 ;
 
@@ -289,7 +289,7 @@ continua_atibui_ou_func:
 ;
 
 
-atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA \n");}
+atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
                    expressao{
                      
                      if(esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
@@ -382,67 +382,34 @@ parametros_ou_nada:
 
 lista_params:  {num_params = 0;}
                lista_params VIRGULA expressao {num_params++;}
-               | expressao {num_params++;}
+               //| expressao {num_params++;}
 ;
-
-parametro_func:
-         IDENT {
-            if((ps = busca(&tabela, token)) != NULL){
-               if (ps->categoria == variavel){
-                  sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
-                  geraCodigo(NULL, mepa_buf);
-                  $$ = ps->conteudo.var.tipo;
-               }else if (ps->categoria == parametro){
-                  if(ps->conteudo.param.passagem == parametro_copia){
-                     sprintf(mepa_buf, "CRVL %d, %d",ps->nivel , ps->conteudo.param.deslocamento );
-                     geraCodigo(NULL, mepa_buf);
-                     $$ = ps->conteudo.param.tipo;
-                  }else if(ps->conteudo.param.passagem == parametro_ref){
-                     sprintf(mepa_buf, "CRVI %d, %d",ps->nivel , ps->conteudo.param.deslocamento );
-                     geraCodigo(NULL, mepa_buf);
-                     $$ = ps->conteudo.param.tipo;
-                  }
-               }else{
-                  printf("ERRO: chamada de funcao dentro de chamada de funcao superou o limite da recusao de 2\n");
-               }
-            }   
-         }
-         | NUMERO {
-            sprintf (mepa_buf, "CRCT %d", atoi(token));
-            geraCodigo(NULL, mepa_buf);
-            $$ = pas_integer;
-         }   
-         | VALOR_BOOL {
-            if(strcmp(token, "True") == 0)
-               sprintf (mepa_buf, "CRCT %d", 1);
-            else
-               sprintf (mepa_buf, "CRCT %d", 0);
-            geraCodigo(NULL, mepa_buf);
-            $$ = pas_boolean;
-         }
-;
-
 
 // =========== REGRA 22 ============= //
 comando_condicional:
-                  IF expressao {
-                     if($2 == pas_boolean){
-                        rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
-                        sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
-                        geraCodigo(NULL, mepa_buf);
-                     }else{
-                        exit(1);
-                     }
-                  }
-                  THEN comando {
-                     rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
-                     sprintf(mepa_buf, "DSVS %s",rotulo_a.rotulo);
-                     geraCodigo(NULL, mepa_buf);
-                     rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
-                     geraCodigo (rotulo_a.rotulo, "NADA"); 
-                  }
+                  if_then cond_else
+;
+
+if_then:
+         IF expressao {
+            if($2 == pas_boolean){
+               rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+               sprintf(mepa_buf, "DSVF %s",rotulo_a.rotulo);
+               geraCodigo(NULL, mepa_buf);
+            }else{
+               exit(1);
+            }
+         }
+         THEN comando {
+            rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
+            sprintf(mepa_buf, "DSVS %s",rotulo_a.rotulo);
+            geraCodigo(NULL, mepa_buf);
+            rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
+            geraCodigo (rotulo_a.rotulo, "NADA"); 
+         }
+cond_else:
                   else_ou_nada{
-                        fprintf(stderr, "TERMONOU O ELSE \n");
+                        fprintf(stderr, "TERMONOU O BHUR \n");
                         rotulo_a = p_rotulos->pilha[p_rotulos->topo-1];
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
                         remove_n(&p_rotulos, 2);
@@ -450,8 +417,8 @@ comando_condicional:
 ;
 
 else_ou_nada: 
-               ELSE comando
-               | %prec "lower_then_else"
+               ELSE { fprintf(stderr, "TERMONOU o BRUH2 \n"); }comando
+              //| %prec LOWER_THAN_ELSE
 ;                
 
 // =========== REGRA 23 ============= //
