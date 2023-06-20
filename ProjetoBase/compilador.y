@@ -69,6 +69,7 @@ enum tipo_dado{
 %type <int_val> parametros_ou_nada;
 %type <int_val> funcao_ou_ident;
 %type <int_val> empilha_retorno;
+%type <int_val> continua_atibui_ou_func;
 
 
 
@@ -108,7 +109,7 @@ input_idents: IDENT VIRGULA IDENT
 bloco       :
             parte_declara_vars
             {
-            fprintf(stderr,"COISA DE TESTE \n");
+            //fprintf(stderr,"COISA DE TESTE \n");
             rotulo_a = gerarrotulo(&p_rotulos);
             sprintf(mepa_buf, "DSVS %s", rotulo_a.rotulo);
             geraCodigo (NULL, mepa_buf);
@@ -205,9 +206,9 @@ declara_procedimento:
                         sprintf(mepa_buf, "ENPR %d", nivel_lexico);
                         geraCodigo(rotulo_a.rotulo, mepa_buf);
 
-                        conteudo.proc.rotulo = rotulo_a.rotulo;
+                        strcpy(conteudo.proc.rotulo, rotulo_a.rotulo);
                         conteudo.proc.qtd_parametros = num_params;
-
+                     
                         memcpy(conteudo.proc.lista, lista_parametros, sizeof(struct parametro)*num_params);
                         
                         // for(int i = 0; i < num_params; ++i){
@@ -229,17 +230,21 @@ declara_procedimento:
                         //pilha_int_empilhar(&pilha_amem, num_params);
 
                      } PONTO_E_VIRGULA {imprime_tabela(&tabela);} bloco{
-                           
+
                            sprintf(mepa_buf, "DMEM %d", pilha_num_vars[ponteiro_pilha_num_vars]);
+                           geraCodigo(NULL, mepa_buf);
                            ponteiro_pilha_num_vars--;
                            sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, num_params);
                            geraCodigo(NULL, mepa_buf);
                            rotulo_a = pegarrotulo(&p_rotulos);
-                     } PONTO_E_VIRGULA 
+
+
+                           //falta remover os simbolos da tabela de simbolos
+                     } PONTO_E_VIRGULA
 ;
 
 parametros_formais_ou_nada:
-               ABRE_PARENTESES lista_params_formais FECHA_PARENTESES
+               ABRE_PARENTESES {num_params = 0;} lista_params_formais FECHA_PARENTESES
                |
 ;
 
@@ -252,7 +257,7 @@ declara_function:
                   sprintf(mepa_buf, "ENPR %d", nivel_lexico);
                   geraCodigo(rotulo_a.rotulo, mepa_buf);
 
-                  conteudo.proc.rotulo = rotulo_a.rotulo;
+                  strcpy(conteudo.proc.rotulo, rotulo_a.rotulo);
                   conteudo.proc.qtd_parametros = num_params;
 
                   memcpy(conteudo.proc.lista, lista_parametros, sizeof(struct parametro)*num_params);
@@ -281,7 +286,7 @@ declara_function:
 
 ; 
 
-lista_params_formais:   {num_params = 0;}
+lista_params_formais:   
                         lista_params_formais VIRGULA parametro {num_params++;}
                         | parametro {num_params++;}
 ;
@@ -297,7 +302,7 @@ parametro:
             else if (!strcmp(token, "boolean"))
                s.conteudo.param.tipo = pas_boolean;
             else {
-               fprintf(stderr, "Tipo do parametro formal invalido\n");
+               //fprintf(stderr, "Tipo do parametro formal invalido\n");
                exit(1);
             }
             adicionar(&tabela, s);
@@ -312,7 +317,7 @@ parametro:
             else if (!strcmp(token, "boolean"))
                s.conteudo.param.tipo = pas_boolean;
             else {
-               fprintf(stderr, "Tipo do parametro formal invalido\n");
+               //fprintf(stderr, "Tipo do parametro formal invalido\n");
                exit(1);
             }
             adicionar(&tabela, s);
@@ -346,15 +351,17 @@ atribui_ou_func:
             }
             esquerdo_recursao_func++;
             printf("INDO PARA O ATRIBUI OU PARAMETROS\n");
+            printf("identificador achado = %s\n", esquerdo_func[esquerdo_recursao_func-1]->identificador);
          }
          continua_atibui_ou_func{
-            esquerdo_recursao_func--;
+            if ($3 == 1 )
+                esquerdo_recursao_func--;
          }
 ;
 
 continua_atibui_ou_func:
-                  ATRIBUICAO atribui_contiunuacao {printf("ATRIBUICAO ESCOLHIDA \n");}
-                  | parametros_ou_nada {printf("FUNCAO ESCOLHIDA \n");}
+                  ATRIBUICAO atribui_contiunuacao {$$ = 1; printf("ATRIBUICAO ESCOLHIDA \n");}
+                  | parametros_ou_nada {$$ = 2; printf( "FUNCAO ESCOLHIDA \n");}
 ;
 
 
@@ -366,7 +373,7 @@ atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
                            sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.deslocamento );
                            geraCodigo(NULL, mepa_buf);
                         }else{
-                           printf ("erro: expresao entre tipos incompativeis \n");
+                           printf ("ERRO: expresao entre tipos incompativeis \n");
                            exit(1);
                         }
                      }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
@@ -379,7 +386,7 @@ atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
                               geraCodigo(NULL, mepa_buf);
                            }
                         }else {
-                           printf ("erro: expresao entre tipos incompativeis \n");
+                           printf ("ERRO: expresao entre tipos incompativeis \n");
                            exit(1);
                         }
                      } 
@@ -396,6 +403,7 @@ funcao_ou_ident:
                      exit(1);
                   }
                   esquerdo_recursao_func++;  //evita de esquerdo_func se sobrescrito dentro de uma chamada recursiva de funcao_ou_ident
+                  printf("identificador achado = %s\n", esquerdo_func[esquerdo_recursao_func-1]->identificador);
                }
                parametros_ou_nada{
                   if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
@@ -418,13 +426,9 @@ funcao_ou_ident:
 ;
 
 parametros_ou_nada:
-                 empilha_retorno ABRE_PARENTESES lista_params FECHA_PARENTESES {
+                 empilha_retorno ABRE_PARENTESES {num_params = 0;}lista_params FECHA_PARENTESES {
                  if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao || esquerdo_func[esquerdo_recursao_func-1]->categoria == procedimento){
                      $$ = undefined_type; //caso seja procedure
-                     if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao){
-                        geraCodigo(NULL, "AMEM 1");
-                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
-                     }
                      if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros != num_params){
                         printf("%d %d\n", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros, num_params);
                         printf("ERRO: numero errado de parametros\n");
@@ -458,7 +462,7 @@ empilha_retorno:  {
                   }
 ;
 
-lista_params:  {num_params = 0;printf("TA EM ZERO\n");}
+lista_params:  
                lista_params VIRGULA expressao {num_params++; printf("%dAMAMA\n",num_params);}
                | {printf("%d\n",num_params); }expressao {num_params++; printf("%dSUGA\n",num_params);}
 ;
@@ -488,14 +492,15 @@ if_then:
          }
 cond_else:
                   else_ou_nada{
-                        fprintf(stderr, "TERMONOU O BHUR \n");
+                        //fprintf(stderr, "TERMONOU O BHUR \n");
                         rotulo_a = pegarrotulo(&p_rotulos);
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
                   }
 ;
 
 else_ou_nada: 
-               ELSE { fprintf(stderr, "TERMONOU o BRUH2 \n"); }comando
+               ELSE { //fprintf(stderr, "TERMONOU o BRUH2 \n"); 
+               }comando
               //| %prec LOWER_THAN_ELSE
 ;                
 
@@ -533,7 +538,7 @@ expressao:
                if ($1 == $3)
                   $$ = pas_boolean;
                else{
-                  printf ("erro: expresao entre tipos incompativeis \n");
+                  printf ("ERRO: expresao entre tipos incompativeis \n");
                   exit(1);
                }
             }
@@ -561,7 +566,7 @@ expressao_simples:
                   if ($2 == pas_integer)
                      $$ = $2;
                   else{
-                     printf ("erro: expresao entre tipos incompativeis \n");
+                     printf ("ERRO: expresao entre tipos incompativeis \n");
                      exit(1);
                   }
                }
@@ -570,7 +575,7 @@ expressao_simples:
                   if ($2 == pas_integer)
                      $$ = $2;
                   else{
-                     printf ("erro: expresao entre tipos incompativeis \n");
+                     printf ("ERRO: expresao entre tipos incompativeis \n");
                      exit(1);
                   }
                }
@@ -579,7 +584,7 @@ expressao_simples:
                   if ($1 == $3 && $1 == pas_integer)
                      $$ = $3;
                   else{
-                     printf ("erro: expresao entre tipos incompativeis \n");
+                     printf ("ERRO: expresao entre tipos incompativeis \n");
                      exit(1);
                   }
                }
@@ -588,7 +593,7 @@ expressao_simples:
                   if ($1 == $3 && $1 == pas_integer)
                      $$ = $3;
                   else{
-                     printf ("erro: expresao entre tipos incompativeis \n");
+                     printf ("ERRO: expresao entre tipos incompativeis \n");
                      exit(1);
                   }
                }
@@ -597,7 +602,7 @@ expressao_simples:
                   if ($1 == $3 && $1 == pas_boolean)
                      $$ = $3;
                   else{
-                     printf ("erro: expresao entre tipos incompativeis \n");
+                     printf ("ERRO: expresao entre tipos incompativeis \n");
                      exit(1);
                   }
                }
@@ -612,7 +617,7 @@ termo:
          if ($1 == $3 && $1 == pas_integer)
             $$ = $3;
          else{
-            printf ("erro: expresao entre tipos incompativeis \n");
+            printf ("ERRO: expresao entre tipos incompativeis \n");
             exit(1);
          }
       }
@@ -621,7 +626,7 @@ termo:
          if ($1 == $3 && $1 == pas_integer)
             $$ = $3;
          else{
-            printf ("erro: expresao entre tipos incompativeis \n");
+            printf ("ERRO: expresao entre tipos incompativeis \n");
             exit(1);
          }
       }
@@ -630,7 +635,7 @@ termo:
           if ($1 == $3 && $1 == pas_boolean)
             $$ = $3;
           else{
-            printf ("erro: expresao entre tipos incompativeis \n");
+            printf ("ERRO: expresao entre tipos incompativeis \n");
             exit(1);
           }
       }
