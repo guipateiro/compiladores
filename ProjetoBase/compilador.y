@@ -68,7 +68,8 @@ enum tipo_dado{
 %type <int_val> expressao;
 %type <int_val> parametros_ou_nada;
 %type <int_val> funcao_ou_ident;
-%type <int_val> empilha_retorno
+%type <int_val> empilha_retorno;
+
 
 
 
@@ -219,26 +220,26 @@ declara_procedimento:
                         adicionar(&tabela, s);
 
                         // atribui o deslocamento correto e coloca na pilha os símbolos
-                        for(int i = num_params-1; i >= 0; --i){
-                           lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
-                           printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
-                           adicionar(&tabela, lista_simbolos[i]);
-                        }
+                        //for(int i = num_params-1; i >= 0; --i){
+                           //lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
+                           //printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
+                           //adicionar(&tabela, lista_simbolos[i]);
+                        //}
                        // rot_num++; // para o desvio de procedures dentro dessa procedure
                         //pilha_int_empilhar(&pilha_amem, num_params);
 
-                     } PONTO_E_VIRGULA bloco{
-
+                     } PONTO_E_VIRGULA {imprime_tabela(&tabela);} bloco{
+                           
                            sprintf(mepa_buf, "DMEM %d", pilha_num_vars[ponteiro_pilha_num_vars]);
                            ponteiro_pilha_num_vars--;
-                           sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, 9999);
+                           sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, num_params);
                            geraCodigo(NULL, mepa_buf);
                            rotulo_a = pegarrotulo(&p_rotulos);
-                     } PONTO_E_VIRGULA
+                     } PONTO_E_VIRGULA 
 ;
 
 parametros_formais_ou_nada:
-               ABRE_PARENTESES lista_paramentro_formais FECHA_PARENTESES
+               ABRE_PARENTESES lista_params_formais FECHA_PARENTESES
                |
 ;
 
@@ -280,15 +281,42 @@ declara_function:
 
 ; 
 
-
-lista_paramentro_formais:
-                        lista_paramentro_formais VIRGULA parametro
-                        | parametro
+lista_params_formais:   {num_params = 0;}
+                        lista_params_formais VIRGULA parametro {num_params++;}
+                        | parametro {num_params++;}
 ;
 
 parametro:
-         VAR IDENT DOIS_PONTOS TIPO
-         |  IDENT DOIS_PONTOS TIPO
+         VAR IDENT {
+            cc.param.passagem = parametro_ref;
+            printf("adicionado token [%s]\n", token);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+         } DOIS_PONTOS TIPO {
+            if (!strcmp(token, "integer"))
+               s.conteudo.param.tipo = pas_integer;
+            else if (!strcmp(token, "boolean"))
+               s.conteudo.param.tipo = pas_boolean;
+            else {
+               fprintf(stderr, "Tipo do parametro formal invalido\n");
+               exit(1);
+            }
+            adicionar(&tabela, s);
+         } 
+         |  IDENT {
+            cc.param.passagem = parametro_copia;
+            printf("adicionado token [%s]\n", token);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+         } DOIS_PONTOS TIPO {
+            if (!strcmp(token, "integer"))
+               s.conteudo.param.tipo = pas_integer;
+            else if (!strcmp(token, "boolean"))
+               s.conteudo.param.tipo = pas_boolean;
+            else {
+               fprintf(stderr, "Tipo do parametro formal invalido\n");
+               exit(1);
+            }
+            adicionar(&tabela, s);
+         }
 ;
 
 // =========== REGRA 17 ============= //
@@ -398,6 +426,7 @@ parametros_ou_nada:
                         $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }
                      if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros != num_params){
+                        printf("%d %d\n", esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros, num_params);
                         printf("ERRO: numero errado de parametros\n");
                         exit(1);
                      }
@@ -429,9 +458,9 @@ empilha_retorno:  {
                   }
 ;
 
-lista_params:  {num_params = 0;}
-               lista_params VIRGULA expressao {num_params++;}
-               //| expressao {num_params++;}
+lista_params:  {num_params = 0;printf("TA EM ZERO\n");}
+               lista_params VIRGULA expressao {num_params++; printf("%dAMAMA\n",num_params);}
+               | {printf("%d\n",num_params); }expressao {num_params++; printf("%dSUGA\n",num_params);}
 ;
 
 // =========== REGRA 22 ============= //
