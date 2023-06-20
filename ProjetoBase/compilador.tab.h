@@ -107,7 +107,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 56 "compilador.y"
+#line 58 "compilador.y"
 
    char * str;  // define o tipo str
    int int_val; // define o tipo int_val
