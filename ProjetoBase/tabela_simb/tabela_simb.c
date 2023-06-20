@@ -64,6 +64,7 @@ void remover_ate(struct tab_simb **tabela, const char *nome) {
             (*tabela)->topo--;
             break;
         }
+        imprime_tabela(tabela);
         (*tabela)->topo--;
     }
     for(--i; i >= 0; i--) {
@@ -71,6 +72,8 @@ void remover_ate(struct tab_simb **tabela, const char *nome) {
             break;
         (*tabela)->topo--;
     
+        imprime_tabela(tabela);
     }
     adicionar(tabela,*simb);
+    imprime_tabela(tabela);
 }

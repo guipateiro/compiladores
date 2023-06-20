@@ -33,6 +33,8 @@ int num_params;
 char proc_name[128];
 struct cat_conteudo conteudo;
 int pilha_num_vars[1000];
+char pilha_proc_name[100][128];
+int pilha_proc = 0;
 int ponteiro_pilha_num_vars = 0;
 
 
@@ -74,8 +76,8 @@ enum tipo_dado{
 
 
 
-%nonassoc ELSE;
 %nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
 
 %%
 
@@ -196,7 +198,8 @@ parte_declara_sub_rotinas:
 
 declara_procedimento:
                      PROCEDURE IDENT {
-                        strcpy(proc_name, token);
+                        strcpy(pilha_proc_name[pilha_proc], token);
+                        pilha_proc++;
                         num_params = 0;
                      }
                      parametros_formais_ou_nada {
@@ -214,7 +217,7 @@ declara_procedimento:
                         // }
                         //printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, deslocamento);
 
-                        s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo, 0);
+                        s = cria_simbolo(pilha_proc_name[pilha_proc-1], procedimento, nivel_lexico, conteudo, 0);
 
                         adicionar(&tabela, s);
 
@@ -235,7 +238,8 @@ declara_procedimento:
                            sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, num_params);
                            geraCodigo(NULL, mepa_buf);
                            rotulo_a = pegarrotulo(&p_rotulos);
-                           remover_ate(&tabela,proc_name);
+                           pilha_proc--;
+                           remover_ate(&tabela,pilha_proc_name[pilha_proc]);
 
 
                            //falta remover os simbolos da tabela de simbolos
@@ -470,7 +474,11 @@ lista_params:
 
 // =========== REGRA 22 ============= //
 comando_condicional:
-                  if_then cond_else
+                  if_then cond_else {
+                        //fprintf(stderr, "TERMONOU O BHUR \n");
+                        rotulo_a = pegarrotulo(&p_rotulos);
+                        geraCodigo (rotulo_a.rotulo, "NADA"); 
+                  }
 ;
 
 if_then:
@@ -491,18 +499,11 @@ if_then:
             rotulo_a = pegarrotulo(&p_rotulos);
             geraCodigo (rotulo_a.rotulo, "NADA"); 
          }
-cond_else:
-                  else_ou_nada{
-                        //fprintf(stderr, "TERMONOU O BHUR \n");
-                        rotulo_a = pegarrotulo(&p_rotulos);
-                        geraCodigo (rotulo_a.rotulo, "NADA"); 
-                  }
 ;
 
-else_ou_nada: 
-               ELSE { //fprintf(stderr, "TERMONOU o BRUH2 \n"); 
-               }comando
-              //| %prec LOWER_THAN_ELSE
+cond_else: 
+               ELSE comando
+              | %prec LOWER_THAN_ELSE
 ;                
 
 // =========== REGRA 23 ============= //
