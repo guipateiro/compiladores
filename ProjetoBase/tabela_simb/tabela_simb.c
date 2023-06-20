@@ -12,6 +12,7 @@ struct tab_simb * inicializa(){
 
 void adicionar(struct tab_simb **tabela, struct simbolo simb){
     (*tabela)->simbolos[(*tabela)->topo] = simb;
+    //printf("ROTULO ATUAL: %s\n",(*tabela)->simbolos[(*tabela)->topo].conteudo.proc.rotulo);
     (*tabela)->topo++;
 }
 
@@ -45,6 +46,10 @@ void remover_varios(struct tab_simb **tabela, int quantidade){
 void imprime_tabela(struct tab_simb **tabela){
     printf("numero de simbolos %i\n",(*tabela)->topo-1);
      for(int i = (*tabela)->topo-1; i >= 0; i--){
-        printf("Simbolo %i: token = %s || nivel = %i || deslocamento = %i \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].conteudo.var.deslocamento);
+        if((*tabela)->simbolos[i].categoria == procedimento){
+            printf("Simbolo %i: token = %s || nivel = %i || rotulo = %s \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].conteudo.proc.rotulo);
+        }else {
+            printf("Simbolo %i: token = %s || nivel = %i || deslocamento = %i \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].conteudo.var.deslocamento);
+        }
     }
 }
