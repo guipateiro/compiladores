@@ -49,7 +49,28 @@ void imprime_tabela(struct tab_simb **tabela){
         if((*tabela)->simbolos[i].categoria == procedimento){
             printf("Simbolo %i: token = %s || nivel = %i || rotulo = %s \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].conteudo.proc.rotulo);
         }else {
-            printf("Simbolo %i: token = %s || nivel = %i || deslocamento = %i \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].conteudo.var.deslocamento);
+            printf("Simbolo %i: token = %s || nivel = %i || deslocamento = %i \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].deslocamento);
         }
     }
+}
+
+void remover_ate(struct tab_simb **tabela, const char *nome) {
+    printf("removendo func/proc %s\n", nome);
+    struct simbolo* simb = NULL; 
+    int i;
+    for(i = (*tabela)->topo-1; i >= 0; i--) {
+        if (!strcmp((*tabela)->simbolos[i].identificador, nome) && ((*tabela)->simbolos[i].categoria == procedimento || (*tabela)->simbolos[i].categoria == funcao)) {
+            simb = &(*tabela)->simbolos[i];
+            (*tabela)->topo--;
+            break;
+        }
+        (*tabela)->topo--;
+    }
+    for(--i; i >= 0; i--) {
+        if ((*tabela)->simbolos[i].deslocamento >= 0)
+            break;
+        (*tabela)->topo--;
+    
+    }
+    adicionar(tabela,*simb);
 }

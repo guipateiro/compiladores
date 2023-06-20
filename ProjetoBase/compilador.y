@@ -167,18 +167,16 @@ tipo        : TIPO {
 
 // =========== REGRA 10 ============= //
 lista_idents: lista_idents VIRGULA IDENT {
-               cc.var.deslocamento = num_vars;
                printf("adicionado token [%s]\n", token);
-               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc, num_vars);
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
                num_vars_por_nivel[nivel_lexico]++;
                }
             | IDENT {
-               cc.var.deslocamento = num_vars;
                printf("adicionado token [%s]\n", token);
-               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc, num_vars);
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
@@ -214,9 +212,9 @@ declara_procedimento:
                         // for(int i = 0; i < num_params; ++i){
                         //    printf("proc.lista[%d] tem tipo %d e passado por %d \n", i, ti.proc.lista[i].tipo, ti.proc.lista[i].passagem);
                         // }
-                        printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, conteudo.var.deslocamento);
+                        //printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, deslocamento);
 
-                        s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo);
+                        s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo, 0);
 
                         adicionar(&tabela, s);
 
@@ -237,6 +235,7 @@ declara_procedimento:
                            sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, num_params);
                            geraCodigo(NULL, mepa_buf);
                            rotulo_a = pegarrotulo(&p_rotulos);
+                           remover_ate(&tabela,proc_name);
 
 
                            //falta remover os simbolos da tabela de simbolos
@@ -265,16 +264,16 @@ declara_function:
                   // for(int i = 0; i < num_params; ++i){
                   //    printf("proc.lista[%d] tem tipo %d e passado por %d \n", i, ti.proc.lista[i].tipo, ti.proc.lista[i].passagem);
                   // }
-                  printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, conteudo.var.deslocamento);
+                  //printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, deslocamento);
 
-                  s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo);
+                  s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo, 0);
 
                   adicionar(&tabela, s);
 
                   // atribui o deslocamento correto e coloca na pilha os símbolos
                   for(int i = num_params-1; i >= -1; --i){
-                     lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
-                     printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
+                     lista_simbolos[i].deslocamento = -4 + (i - (num_params-1)); 
+                     printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].deslocamento);
                      adicionar(&tabela, lista_simbolos[i]);
                   }
                   // rot_num++; // para o desvio de procedures dentro dessa procedure
@@ -295,7 +294,7 @@ parametro:
          VAR IDENT {
             cc.param.passagem = parametro_ref;
             printf("adicionado token [%s]\n", token);
-            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc, -4 - num_params);
          } DOIS_PONTOS TIPO {
             if (!strcmp(token, "integer"))
                s.conteudo.param.tipo = pas_integer;
@@ -310,7 +309,9 @@ parametro:
          |  IDENT {
             cc.param.passagem = parametro_copia;
             printf("adicionado token [%s]\n", token);
-            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc, -4 - num_params);
+            printf("OI %d\n\n\n", num_params);
+            printf("TCHAU %d\n\n\n", s.deslocamento);
          } DOIS_PONTOS TIPO {
             if (!strcmp(token, "integer"))
                s.conteudo.param.tipo = pas_integer;
@@ -370,7 +371,7 @@ atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
                      
                      if(esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
                         if($2 == esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo){
-                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.deslocamento );
+                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                            geraCodigo(NULL, mepa_buf);
                         }else{
                            printf ("ERRO: expresao entre tipos incompativeis \n");
@@ -379,10 +380,10 @@ atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
                      }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
                         if($2 == esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo){
                            if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia ){
-                              sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                              sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                               geraCodigo(NULL, mepa_buf);
                            }else if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
-                              sprintf(mepa_buf, "ARMI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                              sprintf(mepa_buf, "ARMI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                               geraCodigo(NULL, mepa_buf);
                            }
                         }else {
@@ -407,16 +408,16 @@ funcao_ou_ident:
                }
                parametros_ou_nada{
                   if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
-                     sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.deslocamento );
+                     sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                      geraCodigo(NULL, mepa_buf);
                      $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo;
                   }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
                      if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia){
-                        sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                        sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                         geraCodigo(NULL, mepa_buf);
                         $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }else if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
-                        sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                        sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                         geraCodigo(NULL, mepa_buf);
                         $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }
@@ -538,7 +539,7 @@ expressao:
                if ($1 == $3)
                   $$ = pas_boolean;
                else{
-                  printf ("ERRO: expresao entre tipos incompativeis \n");
+                  printf ("ERRO: expressao entre tipos incompativeis \n");
                   exit(1);
                }
             }
@@ -688,7 +689,7 @@ parametro_leitura:
                      geraCodigo(NULL, "LEIT");
                      printf("buscando token %s\n", token);
                      if((ps = busca(&tabela, token)) != NULL){
-                        sprintf(mepa_buf, "ARMZ %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
+                        sprintf(mepa_buf, "ARMZ %d, %d",ps->nivel , ps->deslocamento );
                         geraCodigo(NULL, mepa_buf);
                      }else{
                         printf("falha ao procurar token %s\n", token);

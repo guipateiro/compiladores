@@ -24,4 +24,6 @@ void coloca_tipo(struct tab_simb **tabela, int tipo, int quantidade);
 
 void imprime_tabela(struct tab_simb **tabela);
 
+void remover_ate(struct tab_simb **tabela, const char *nome);
+
 #endif

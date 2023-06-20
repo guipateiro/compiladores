@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.8.2.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -34,10 +34,6 @@
 /* C LALR(1) parser skeleton written by Richard Stallman, by
    simplifying the original so-called "semantic" parser.  */
 
-/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
-   especially those whose name start with YY_ or yy_.  They are
-   private implementation details that can be changed or removed.  */
-
 /* All symbols defined below should begin with yy or YY, to avoid
    infringing on user name space.  This should be done even for local
    variables, as they might otherwise be expanded by user macros.
@@ -45,11 +41,14 @@
    define necessary library symbols; they are noted "INFRINGES ON
    USER NAME SPACE" below.  */
 
-/* Identify Bison output, and Bison version.  */
-#define YYBISON 30802
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
-/* Bison version string.  */
-#define YYBISON_VERSION "3.8.2"
+/* Identify Bison output.  */
+#define YYBISON 1
+
+/* Bison version.  */
+#define YYBISON_VERSION "3.5.1"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -108,7 +107,7 @@ enum tipo_dado{
 
 
 
-#line 112 "compilador.tab.c"
+#line 111 "compilador.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -131,128 +130,103 @@ enum tipo_dado{
 #  endif
 # endif
 
-#include "compilador.tab.h"
-/* Symbol kind.  */
-enum yysymbol_kind_t
-{
-  YYSYMBOL_YYEMPTY = -2,
-  YYSYMBOL_YYEOF = 0,                      /* "end of file"  */
-  YYSYMBOL_YYerror = 1,                    /* error  */
-  YYSYMBOL_YYUNDEF = 2,                    /* "invalid token"  */
-  YYSYMBOL_PROGRAM = 3,                    /* PROGRAM  */
-  YYSYMBOL_ABRE_PARENTESES = 4,            /* ABRE_PARENTESES  */
-  YYSYMBOL_FECHA_PARENTESES = 5,           /* FECHA_PARENTESES  */
-  YYSYMBOL_VIRGULA = 6,                    /* VIRGULA  */
-  YYSYMBOL_PONTO_E_VIRGULA = 7,            /* PONTO_E_VIRGULA  */
-  YYSYMBOL_DOIS_PONTOS = 8,                /* DOIS_PONTOS  */
-  YYSYMBOL_PONTO = 9,                      /* PONTO  */
-  YYSYMBOL_T_BEGIN = 10,                   /* T_BEGIN  */
-  YYSYMBOL_T_END = 11,                     /* T_END  */
-  YYSYMBOL_VAR = 12,                       /* VAR  */
-  YYSYMBOL_IDENT = 13,                     /* IDENT  */
-  YYSYMBOL_ATRIBUICAO = 14,                /* ATRIBUICAO  */
-  YYSYMBOL_LABEL = 15,                     /* LABEL  */
-  YYSYMBOL_TYPE = 16,                      /* TYPE  */
-  YYSYMBOL_PROCEDURE = 17,                 /* PROCEDURE  */
-  YYSYMBOL_FUNCTION = 18,                  /* FUNCTION  */
-  YYSYMBOL_GOTO = 19,                      /* GOTO  */
-  YYSYMBOL_IF = 20,                        /* IF  */
-  YYSYMBOL_THEN = 21,                      /* THEN  */
-  YYSYMBOL_ELSE = 22,                      /* ELSE  */
-  YYSYMBOL_WHILE = 23,                     /* WHILE  */
-  YYSYMBOL_DO = 24,                        /* DO  */
-  YYSYMBOL_ARRAY = 25,                     /* ARRAY  */
-  YYSYMBOL_OF = 26,                        /* OF  */
-  YYSYMBOL_ABRE_CONCHETES = 27,            /* ABRE_CONCHETES  */
-  YYSYMBOL_FECHA_CONCHETES = 28,           /* FECHA_CONCHETES  */
-  YYSYMBOL_DIV = 29,                       /* DIV  */
-  YYSYMBOL_AND = 30,                       /* AND  */
-  YYSYMBOL_NOT = 31,                       /* NOT  */
-  YYSYMBOL_OR = 32,                        /* OR  */
-  YYSYMBOL_TIPO = 33,                      /* TIPO  */
-  YYSYMBOL_VALOR_BOOL = 34,                /* VALOR_BOOL  */
-  YYSYMBOL_NUMERO = 35,                    /* NUMERO  */
-  YYSYMBOL_MAIOR = 36,                     /* MAIOR  */
-  YYSYMBOL_MENOR = 37,                     /* MENOR  */
-  YYSYMBOL_IGUAL = 38,                     /* IGUAL  */
-  YYSYMBOL_MENOR_IGUAL = 39,               /* MENOR_IGUAL  */
-  YYSYMBOL_MAIOR_IGUAL = 40,               /* MAIOR_IGUAL  */
-  YYSYMBOL_DIFERENTE = 41,                 /* DIFERENTE  */
-  YYSYMBOL_MAIS = 42,                      /* MAIS  */
-  YYSYMBOL_MENOS = 43,                     /* MENOS  */
-  YYSYMBOL_VEZES = 44,                     /* VEZES  */
-  YYSYMBOL_READ = 45,                      /* READ  */
-  YYSYMBOL_WRITE = 46,                     /* WRITE  */
-  YYSYMBOL_LOWER_THAN_ELSE = 47,           /* LOWER_THAN_ELSE  */
-  YYSYMBOL_YYACCEPT = 48,                  /* $accept  */
-  YYSYMBOL_programa = 49,                  /* programa  */
-  YYSYMBOL_50_1 = 50,                      /* $@1  */
-  YYSYMBOL_input_idents = 51,              /* input_idents  */
-  YYSYMBOL_bloco = 52,                     /* bloco  */
-  YYSYMBOL_53_2 = 53,                      /* $@2  */
-  YYSYMBOL_54_3 = 54,                      /* $@3  */
-  YYSYMBOL_parte_declara_vars = 55,        /* parte_declara_vars  */
-  YYSYMBOL_56_4 = 56,                      /* $@4  */
-  YYSYMBOL_declaracao_de_vars = 57,        /* declaracao_de_vars  */
-  YYSYMBOL_declaracao_de_var = 58,         /* declaracao_de_var  */
-  YYSYMBOL_59_5 = 59,                      /* $@5  */
-  YYSYMBOL_tipo = 60,                      /* tipo  */
-  YYSYMBOL_lista_idents = 61,              /* lista_idents  */
-  YYSYMBOL_comando_composto = 62,          /* comando_composto  */
-  YYSYMBOL_parte_declara_sub_rotinas = 63, /* parte_declara_sub_rotinas  */
-  YYSYMBOL_declara_procedimento = 64,      /* declara_procedimento  */
-  YYSYMBOL_65_6 = 65,                      /* $@6  */
-  YYSYMBOL_66_7 = 66,                      /* $@7  */
-  YYSYMBOL_67_8 = 67,                      /* $@8  */
-  YYSYMBOL_68_9 = 68,                      /* $@9  */
-  YYSYMBOL_parametros_formais_ou_nada = 69, /* parametros_formais_ou_nada  */
-  YYSYMBOL_70_10 = 70,                     /* $@10  */
-  YYSYMBOL_declara_function = 71,          /* declara_function  */
-  YYSYMBOL_72_11 = 72,                     /* $@11  */
-  YYSYMBOL_73_12 = 73,                     /* $@12  */
-  YYSYMBOL_74_13 = 74,                     /* $@13  */
-  YYSYMBOL_lista_params_formais = 75,      /* lista_params_formais  */
-  YYSYMBOL_parametro = 76,                 /* parametro  */
-  YYSYMBOL_77_14 = 77,                     /* $@14  */
-  YYSYMBOL_78_15 = 78,                     /* $@15  */
-  YYSYMBOL_comandos = 79,                  /* comandos  */
-  YYSYMBOL_comando = 80,                   /* comando  */
-  YYSYMBOL_atribui_ou_func = 81,           /* atribui_ou_func  */
-  YYSYMBOL_82_16 = 82,                     /* $@16  */
-  YYSYMBOL_continua_atibui_ou_func = 83,   /* continua_atibui_ou_func  */
-  YYSYMBOL_atribui_contiunuacao = 84,      /* atribui_contiunuacao  */
-  YYSYMBOL_85_17 = 85,                     /* $@17  */
-  YYSYMBOL_funcao_ou_ident = 86,           /* funcao_ou_ident  */
-  YYSYMBOL_87_18 = 87,                     /* $@18  */
-  YYSYMBOL_parametros_ou_nada = 88,        /* parametros_ou_nada  */
-  YYSYMBOL_89_19 = 89,                     /* $@19  */
-  YYSYMBOL_empilha_retorno = 90,           /* empilha_retorno  */
-  YYSYMBOL_lista_params = 91,              /* lista_params  */
-  YYSYMBOL_92_20 = 92,                     /* $@20  */
-  YYSYMBOL_comando_condicional = 93,       /* comando_condicional  */
-  YYSYMBOL_if_then = 94,                   /* if_then  */
-  YYSYMBOL_95_21 = 95,                     /* $@21  */
-  YYSYMBOL_cond_else = 96,                 /* cond_else  */
-  YYSYMBOL_else_ou_nada = 97,              /* else_ou_nada  */
-  YYSYMBOL_98_22 = 98,                     /* $@22  */
-  YYSYMBOL_comando_repetitivo = 99,        /* comando_repetitivo  */
-  YYSYMBOL_100_23 = 100,                   /* $@23  */
-  YYSYMBOL_while_resto = 101,              /* while_resto  */
-  YYSYMBOL_102_24 = 102,                   /* $@24  */
-  YYSYMBOL_expressao = 103,                /* expressao  */
-  YYSYMBOL_relacao = 104,                  /* relacao  */
-  YYSYMBOL_expressao_simples = 105,        /* expressao_simples  */
-  YYSYMBOL_termo = 106,                    /* termo  */
-  YYSYMBOL_fator = 107,                    /* fator  */
-  YYSYMBOL_leitura = 108,                  /* leitura  */
-  YYSYMBOL_parametros_de_leitura = 109,    /* parametros_de_leitura  */
-  YYSYMBOL_parametro_leitura = 110,        /* parametro_leitura  */
-  YYSYMBOL_escrita = 111,                  /* escrita  */
-  YYSYMBOL_parametros_de_escrita = 112,    /* parametros_de_escrita  */
-  YYSYMBOL_parametro_escrita = 113         /* parametro_escrita  */
-};
-typedef enum yysymbol_kind_t yysymbol_kind_t;
+/* Enabling verbose error messages.  */
+#ifdef YYERROR_VERBOSE
+# undef YYERROR_VERBOSE
+# define YYERROR_VERBOSE 1
+#else
+# define YYERROR_VERBOSE 0
+#endif
 
+/* Use api.header.include to #include this header
+   instead of duplicating it here.  */
+#ifndef YY_YY_COMPILADOR_TAB_H_INCLUDED
+# define YY_YY_COMPILADOR_TAB_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
+
+/* Token type.  */
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+  enum yytokentype
+  {
+    PROGRAM = 258,
+    ABRE_PARENTESES = 259,
+    FECHA_PARENTESES = 260,
+    VIRGULA = 261,
+    PONTO_E_VIRGULA = 262,
+    DOIS_PONTOS = 263,
+    PONTO = 264,
+    T_BEGIN = 265,
+    T_END = 266,
+    VAR = 267,
+    IDENT = 268,
+    ATRIBUICAO = 269,
+    LABEL = 270,
+    TYPE = 271,
+    PROCEDURE = 272,
+    FUNCTION = 273,
+    GOTO = 274,
+    IF = 275,
+    THEN = 276,
+    ELSE = 277,
+    WHILE = 278,
+    DO = 279,
+    ARRAY = 280,
+    OF = 281,
+    ABRE_CONCHETES = 282,
+    FECHA_CONCHETES = 283,
+    DIV = 284,
+    AND = 285,
+    NOT = 286,
+    OR = 287,
+    TIPO = 288,
+    VALOR_BOOL = 289,
+    NUMERO = 290,
+    MAIOR = 291,
+    MENOR = 292,
+    IGUAL = 293,
+    MENOR_IGUAL = 294,
+    MAIOR_IGUAL = 295,
+    DIFERENTE = 296,
+    MAIS = 297,
+    MENOS = 298,
+    VEZES = 299,
+    READ = 300,
+    WRITE = 301,
+    LOWER_THAN_ELSE = 302
+  };
+#endif
+
+/* Value type.  */
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+union YYSTYPE
+{
+#line 58 "compilador.y"
+
+   char * str;  // define o tipo str
+   int int_val; // define o tipo int_val
+   struct simbolo *simb;
+
+#line 217 "compilador.tab.c"
+
+};
+typedef union YYSTYPE YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
+# define YYSTYPE_IS_DECLARED 1
+#endif
+
+
+extern YYSTYPE yylval;
+
+int yyparse (void);
+
+#endif /* !YY_YY_COMPILADOR_TAB_H_INCLUDED  */
 
 
 
@@ -291,18 +265,6 @@ typedef __INT_LEAST16_TYPE__ yytype_int16;
 typedef int_least16_t yytype_int16;
 #else
 typedef short yytype_int16;
-#endif
-
-/* Work around bug in HP-UX 11.23, which defines these macros
-   incorrectly for preprocessor constants.  This workaround can likely
-   be removed in 2023, as HPE has promised support for HP-UX 11.23
-   (aka HP-UX 11i v2) only through the end of 2022; see Table 2 of
-   <https://h20195.www2.hpe.com/V2/getpdf.aspx/4AA4-7673ENW.pdf>.  */
-#ifdef __hpux
-# undef UINT_LEAST8_MAX
-# undef UINT_LEAST16_MAX
-# define UINT_LEAST8_MAX 255
-# define UINT_LEAST16_MAX 65535
 #endif
 
 #if defined __UINT_LEAST8_MAX__ && __UINT_LEAST8_MAX__ <= __INT_MAX__
@@ -364,7 +326,6 @@ typedef int yytype_uint16;
 
 #define YYSIZEOF(X) YY_CAST (YYPTRDIFF_T, sizeof (X))
 
-
 /* Stored state numbers (used for stacks). */
 typedef yytype_uint8 yy_state_t;
 
@@ -382,7 +343,6 @@ typedef int yy_state_fast_t;
 #  define YY_(Msgid) Msgid
 # endif
 #endif
-
 
 #ifndef YY_ATTRIBUTE_PURE
 # if defined __GNUC__ && 2 < __GNUC__ + (96 <= __GNUC_MINOR__)
@@ -402,23 +362,17 @@ typedef int yy_state_fast_t;
 
 /* Suppress unused-variable warnings by "using" E.  */
 #if ! defined lint || defined __GNUC__
-# define YY_USE(E) ((void) (E))
+# define YYUSE(E) ((void) (E))
 #else
-# define YY_USE(E) /* empty */
+# define YYUSE(E) /* empty */
 #endif
 
+#if defined __GNUC__ && ! defined __ICC && 407 <= __GNUC__ * 100 + __GNUC_MINOR__
 /* Suppress an incorrect diagnostic about yylval being uninitialized.  */
-#if defined __GNUC__ && ! defined __ICC && 406 <= __GNUC__ * 100 + __GNUC_MINOR__
-# if __GNUC__ * 100 + __GNUC_MINOR__ < 407
-#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
-    _Pragma ("GCC diagnostic push")                                     \
-    _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")
-# else
-#  define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                           \
+# define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN                            \
     _Pragma ("GCC diagnostic push")                                     \
     _Pragma ("GCC diagnostic ignored \"-Wuninitialized\"")              \
     _Pragma ("GCC diagnostic ignored \"-Wmaybe-uninitialized\"")
-# endif
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END      \
     _Pragma ("GCC diagnostic pop")
 #else
@@ -447,7 +401,7 @@ typedef int yy_state_fast_t;
 
 #define YY_ASSERT(E) ((void) (0 && (E)))
 
-#if !defined yyoverflow
+#if ! defined yyoverflow || YYERROR_VERBOSE
 
 /* The parser invokes alloca or malloc; define the necessary symbols.  */
 
@@ -512,7 +466,8 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 #   endif
 #  endif
 # endif
-#endif /* !defined yyoverflow */
+#endif /* ! defined yyoverflow || YYERROR_VERBOSE */
+
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
@@ -588,16 +543,14 @@ union yyalloc
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  174
 
-/* YYMAXUTOK -- Last valid token kind.  */
+#define YYUNDEFTOK  2
 #define YYMAXUTOK   302
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex, with out-of-bounds checking.  */
-#define YYTRANSLATE(YYX)                                \
-  (0 <= (YYX) && (YYX) <= YYMAXUTOK                     \
-   ? YY_CAST (yysymbol_kind_t, yytranslate[YYX])        \
-   : YYSYMBOL_YYUNDEF)
+#define YYTRANSLATE(YYX)                                                \
+  (0 <= (YYX) && (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
 
 /* YYTRANSLATE[TOKEN-NUM] -- Symbol number corresponding to TOKEN-NUM
    as returned by yylex.  */
@@ -637,65 +590,65 @@ static const yytype_int8 yytranslate[] =
 };
 
 #if YYDEBUG
-/* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
+  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
        0,    89,    89,    89,   105,   111,   119,   110,   132,   132,
-     143,   147,   148,   150,   150,   157,   169,   178,   190,   194,
-     195,   196,   200,   204,   232,   232,   200,   244,   244,   245,
-     249,   252,   279,   249,   287,   288,   292,   292,   307,   307,
-     326,   327,   328,   333,   334,   335,   336,   337,   338,   344,
-     344,   360,   361,   365,   365,   397,   397,   426,   426,   441,
-     454,   463,   464,   464,   469,   473,   473,   491,   499,   499,
-     505,   505,   512,   512,   533,   542,   549,   550,   551,   552,
-     553,   554,   559,   562,   570,   579,   588,   597,   609,   612,
-     621,   630,   642,   645,   650,   658,   661,   675,   679,   680,
-     684,   700,   704,   705,   709
+     143,   147,   148,   150,   150,   157,   169,   177,   188,   192,
+     193,   194,   198,   202,   230,   230,   198,   246,   246,   247,
+     251,   254,   281,   251,   289,   290,   294,   294,   309,   309,
+     330,   331,   332,   337,   338,   339,   340,   341,   342,   348,
+     348,   364,   365,   369,   369,   401,   401,   430,   430,   445,
+     458,   467,   468,   468,   473,   477,   477,   495,   503,   503,
+     509,   509,   516,   516,   537,   546,   553,   554,   555,   556,
+     557,   558,   563,   566,   574,   583,   592,   601,   613,   616,
+     625,   634,   646,   649,   654,   662,   665,   679,   683,   684,
+     688,   704,   708,   709,   713
 };
 #endif
 
-/** Accessing symbol of state STATE.  */
-#define YY_ACCESSING_SYMBOL(State) YY_CAST (yysymbol_kind_t, yystos[State])
-
-#if YYDEBUG || 0
-/* The user-facing name of the symbol whose (internal) number is
-   YYSYMBOL.  No bounds checking.  */
-static const char *yysymbol_name (yysymbol_kind_t yysymbol) YY_ATTRIBUTE_UNUSED;
-
+#if YYDEBUG || YYERROR_VERBOSE || 0
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "\"end of file\"", "error", "\"invalid token\"", "PROGRAM",
-  "ABRE_PARENTESES", "FECHA_PARENTESES", "VIRGULA", "PONTO_E_VIRGULA",
-  "DOIS_PONTOS", "PONTO", "T_BEGIN", "T_END", "VAR", "IDENT", "ATRIBUICAO",
-  "LABEL", "TYPE", "PROCEDURE", "FUNCTION", "GOTO", "IF", "THEN", "ELSE",
-  "WHILE", "DO", "ARRAY", "OF", "ABRE_CONCHETES", "FECHA_CONCHETES", "DIV",
-  "AND", "NOT", "OR", "TIPO", "VALOR_BOOL", "NUMERO", "MAIOR", "MENOR",
-  "IGUAL", "MENOR_IGUAL", "MAIOR_IGUAL", "DIFERENTE", "MAIS", "MENOS",
-  "VEZES", "READ", "WRITE", "LOWER_THAN_ELSE", "$accept", "programa",
-  "$@1", "input_idents", "bloco", "$@2", "$@3", "parte_declara_vars",
-  "$@4", "declaracao_de_vars", "declaracao_de_var", "$@5", "tipo",
-  "lista_idents", "comando_composto", "parte_declara_sub_rotinas",
-  "declara_procedimento", "$@6", "$@7", "$@8", "$@9",
-  "parametros_formais_ou_nada", "$@10", "declara_function", "$@11", "$@12",
-  "$@13", "lista_params_formais", "parametro", "$@14", "$@15", "comandos",
-  "comando", "atribui_ou_func", "$@16", "continua_atibui_ou_func",
-  "atribui_contiunuacao", "$@17", "funcao_ou_ident", "$@18",
-  "parametros_ou_nada", "$@19", "empilha_retorno", "lista_params", "$@20",
-  "comando_condicional", "if_then", "$@21", "cond_else", "else_ou_nada",
-  "$@22", "comando_repetitivo", "$@23", "while_resto", "$@24", "expressao",
+  "$end", "error", "$undefined", "PROGRAM", "ABRE_PARENTESES",
+  "FECHA_PARENTESES", "VIRGULA", "PONTO_E_VIRGULA", "DOIS_PONTOS", "PONTO",
+  "T_BEGIN", "T_END", "VAR", "IDENT", "ATRIBUICAO", "LABEL", "TYPE",
+  "PROCEDURE", "FUNCTION", "GOTO", "IF", "THEN", "ELSE", "WHILE", "DO",
+  "ARRAY", "OF", "ABRE_CONCHETES", "FECHA_CONCHETES", "DIV", "AND", "NOT",
+  "OR", "TIPO", "VALOR_BOOL", "NUMERO", "MAIOR", "MENOR", "IGUAL",
+  "MENOR_IGUAL", "MAIOR_IGUAL", "DIFERENTE", "MAIS", "MENOS", "VEZES",
+  "READ", "WRITE", "LOWER_THAN_ELSE", "$accept", "programa", "$@1",
+  "input_idents", "bloco", "$@2", "$@3", "parte_declara_vars", "$@4",
+  "declaracao_de_vars", "declaracao_de_var", "$@5", "tipo", "lista_idents",
+  "comando_composto", "parte_declara_sub_rotinas", "declara_procedimento",
+  "$@6", "$@7", "$@8", "$@9", "parametros_formais_ou_nada", "$@10",
+  "declara_function", "$@11", "$@12", "$@13", "lista_params_formais",
+  "parametro", "$@14", "$@15", "comandos", "comando", "atribui_ou_func",
+  "$@16", "continua_atibui_ou_func", "atribui_contiunuacao", "$@17",
+  "funcao_ou_ident", "$@18", "parametros_ou_nada", "$@19",
+  "empilha_retorno", "lista_params", "$@20", "comando_condicional",
+  "if_then", "$@21", "cond_else", "else_ou_nada", "$@22",
+  "comando_repetitivo", "$@23", "while_resto", "$@24", "expressao",
   "relacao", "expressao_simples", "termo", "fator", "leitura",
   "parametros_de_leitura", "parametro_leitura", "escrita",
   "parametros_de_escrita", "parametro_escrita", YY_NULLPTR
 };
-
-static const char *
-yysymbol_name (yysymbol_kind_t yysymbol)
-{
-  return yytname[yysymbol];
-}
 #endif
+
+# ifdef YYPRINT
+/* YYTOKNUM[NUM] -- (External) token number corresponding to the
+   (internal) symbol number NUM (which must be that of a token).  */
+static const yytype_int16 yytoknum[] =
+{
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295,   296,   297,   298,   299,   300,   301,   302
+};
+# endif
 
 #define YYPACT_NINF (-140)
 
@@ -707,8 +660,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 #define yytable_value_is_error(Yyn) \
   0
 
-/* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
-   STATE-NUM.  */
+  /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
+     STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
     -140,     5,     8,  -140,    31,    10,    43,    12,    16,    48,
@@ -731,9 +684,9 @@ static const yytype_int16 yypact[] =
     -140,   112,  -140,  -140
 };
 
-/* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
-   Performed when YYTABLE does not specify something else to do.  Zero
-   means the default is an error.  */
+  /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
+     Performed when YYTABLE does not specify something else to do.  Zero
+     means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
        2,     0,     0,     1,     0,     0,     0,     0,     0,     0,
@@ -756,7 +709,7 @@ static const yytype_int8 yydefact[] =
       26,     0,    61,    33
 };
 
-/* YYPGOTO[NTERM-NUM].  */
+  /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
     -140,  -140,  -140,  -140,  -139,  -140,  -140,  -140,  -140,  -140,
@@ -768,10 +721,10 @@ static const yytype_int16 yypgoto[] =
     -140,  -140,   -14,  -140,  -140,   -13
 };
 
-/* YYDEFGOTO[NTERM-NUM].  */
-static const yytype_uint8 yydefgoto[] =
+  /* YYDEFGOTO[NTERM-NUM].  */
+static const yytype_int16 yydefgoto[] =
 {
-       0,     1,     2,     8,    13,    17,    25,    14,    15,    20,
+      -1,     1,     2,     8,    13,    17,    25,    14,    15,    20,
       21,    22,    55,    30,    43,    19,    26,    37,    82,   146,
      164,    57,    81,    27,    38,    83,   171,   119,   120,   154,
      143,    44,    45,    46,    59,    85,   123,   124,    67,    89,
@@ -780,9 +733,9 @@ static const yytype_uint8 yydefgoto[] =
       51,   108,   109,    52,   111,   112
 };
 
-/* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
-   positive, shift that token.  If negative, reduce the rule whose
-   number is the opposite.  If YYTABLE_NINF, syntax error.  */
+  /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
+     positive, shift that token.  If negative, reduce the rule whose
+     number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
      116,   113,   126,    88,    60,     3,    90,   157,    74,   104,
@@ -819,8 +772,8 @@ static const yytype_int16 yycheck[] =
       -1,    25
 };
 
-/* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
-   state STATE-NUM.  */
+  /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
+     symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
        0,    49,    50,     0,     3,    13,     4,    13,    51,     6,
@@ -843,7 +796,7 @@ static const yytype_int8 yystos[] =
        7,    74,   103,     7
 };
 
-/* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
+  /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    48,    50,    49,    51,    53,    54,    52,    56,    55,
@@ -859,7 +812,7 @@ static const yytype_int8 yyr1[] =
      110,   111,   112,   112,   113
 };
 
-/* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
+  /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     0,     9,     3,     0,     0,     5,     0,     3,
@@ -876,15 +829,14 @@ static const yytype_int8 yyr2[] =
 };
 
 
-enum { YYENOMEM = -2 };
-
 #define yyerrok         (yyerrstatus = 0)
 #define yyclearin       (yychar = YYEMPTY)
+#define YYEMPTY         (-2)
+#define YYEOF           0
 
 #define YYACCEPT        goto yyacceptlab
 #define YYABORT         goto yyabortlab
 #define YYERROR         goto yyerrorlab
-#define YYNOMEM         goto yyexhaustedlab
 
 
 #define YYRECOVERING()  (!!yyerrstatus)
@@ -906,9 +858,10 @@ enum { YYENOMEM = -2 };
       }                                                           \
   while (0)
 
-/* Backward compatibility with an undocumented macro.
-   Use YYerror or YYUNDEF. */
-#define YYERRCODE YYUNDEF
+/* Error token number */
+#define YYTERROR        1
+#define YYERRCODE       256
+
 
 
 /* Enable debugging if requested.  */
@@ -925,16 +878,19 @@ do {                                            \
     YYFPRINTF Args;                             \
 } while (0)
 
+/* This macro is provided for backward compatibility. */
+#ifndef YY_LOCATION_PRINT
+# define YY_LOCATION_PRINT(File, Loc) ((void) 0)
+#endif
 
 
-
-# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)                    \
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)                    \
 do {                                                                      \
   if (yydebug)                                                            \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Kind, Value); \
+                  Type, Value); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -945,15 +901,18 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyo,
-                       yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
   FILE *yyoutput = yyo;
-  YY_USE (yyoutput);
+  YYUSE (yyoutput);
   if (!yyvaluep)
     return;
+# ifdef YYPRINT
+  if (yytype < YYNTOKENS)
+    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
+# endif
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YY_USE (yykind);
+  YYUSE (yytype);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
@@ -963,13 +922,12 @@ yy_symbol_value_print (FILE *yyo,
 `---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyo,
-                 yysymbol_kind_t yykind, YYSTYPE const * const yyvaluep)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep)
 {
   YYFPRINTF (yyo, "%s %s (",
-             yykind < YYNTOKENS ? "token" : "nterm", yysymbol_name (yykind));
+             yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyo, yykind, yyvaluep);
+  yy_symbol_value_print (yyo, yytype, yyvaluep);
   YYFPRINTF (yyo, ")");
 }
 
@@ -1002,8 +960,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp,
-                 int yyrule)
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule)
 {
   int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -1015,8 +972,9 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp,
     {
       YYFPRINTF (stderr, "   $%d = ", yyi + 1);
       yy_symbol_print (stderr,
-                       YY_ACCESSING_SYMBOL (+yyssp[yyi + 1 - yynrhs]),
-                       &yyvsp[(yyi + 1) - (yynrhs)]);
+                       yystos[+yyssp[yyi + 1 - yynrhs]],
+                       &yyvsp[(yyi + 1) - (yynrhs)]
+                                              );
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -1031,8 +989,8 @@ do {                                    \
    multiple parsers can coexist.  */
 int yydebug;
 #else /* !YYDEBUG */
-# define YYDPRINTF(Args) ((void) 0)
-# define YY_SYMBOL_PRINT(Title, Kind, Value, Location)
+# define YYDPRINTF(Args)
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
 #endif /* !YYDEBUG */
@@ -1055,38 +1013,265 @@ int yydebug;
 #endif
 
 
+#if YYERROR_VERBOSE
 
+# ifndef yystrlen
+#  if defined __GLIBC__ && defined _STRING_H
+#   define yystrlen(S) (YY_CAST (YYPTRDIFF_T, strlen (S)))
+#  else
+/* Return the length of YYSTR.  */
+static YYPTRDIFF_T
+yystrlen (const char *yystr)
+{
+  YYPTRDIFF_T yylen;
+  for (yylen = 0; yystr[yylen]; yylen++)
+    continue;
+  return yylen;
+}
+#  endif
+# endif
 
+# ifndef yystpcpy
+#  if defined __GLIBC__ && defined _STRING_H && defined _GNU_SOURCE
+#   define yystpcpy stpcpy
+#  else
+/* Copy YYSRC to YYDEST, returning the address of the terminating '\0' in
+   YYDEST.  */
+static char *
+yystpcpy (char *yydest, const char *yysrc)
+{
+  char *yyd = yydest;
+  const char *yys = yysrc;
 
+  while ((*yyd++ = *yys++) != '\0')
+    continue;
+
+  return yyd - 1;
+}
+#  endif
+# endif
+
+# ifndef yytnamerr
+/* Copy to YYRES the contents of YYSTR after stripping away unnecessary
+   quotes and backslashes, so that it's suitable for yyerror.  The
+   heuristic is that double-quoting is unnecessary unless the string
+   contains an apostrophe, a comma, or backslash (other than
+   backslash-backslash).  YYSTR is taken from yytname.  If YYRES is
+   null, do not copy; instead, return the length of what the result
+   would have been.  */
+static YYPTRDIFF_T
+yytnamerr (char *yyres, const char *yystr)
+{
+  if (*yystr == '"')
+    {
+      YYPTRDIFF_T yyn = 0;
+      char const *yyp = yystr;
+
+      for (;;)
+        switch (*++yyp)
+          {
+          case '\'':
+          case ',':
+            goto do_not_strip_quotes;
+
+          case '\\':
+            if (*++yyp != '\\')
+              goto do_not_strip_quotes;
+            else
+              goto append;
+
+          append:
+          default:
+            if (yyres)
+              yyres[yyn] = *yyp;
+            yyn++;
+            break;
+
+          case '"':
+            if (yyres)
+              yyres[yyn] = '\0';
+            return yyn;
+          }
+    do_not_strip_quotes: ;
+    }
+
+  if (yyres)
+    return yystpcpy (yyres, yystr) - yyres;
+  else
+    return yystrlen (yystr);
+}
+# endif
+
+/* Copy into *YYMSG, which is of size *YYMSG_ALLOC, an error message
+   about the unexpected token YYTOKEN for the state stack whose top is
+   YYSSP.
+
+   Return 0 if *YYMSG was successfully written.  Return 1 if *YYMSG is
+   not large enough to hold the message.  In that case, also set
+   *YYMSG_ALLOC to the required number of bytes.  Return 2 if the
+   required number of bytes is too large to store.  */
+static int
+yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
+                yy_state_t *yyssp, int yytoken)
+{
+  enum { YYERROR_VERBOSE_ARGS_MAXIMUM = 5 };
+  /* Internationalized format string. */
+  const char *yyformat = YY_NULLPTR;
+  /* Arguments of yyformat: reported tokens (one for the "unexpected",
+     one per "expected"). */
+  char const *yyarg[YYERROR_VERBOSE_ARGS_MAXIMUM];
+  /* Actual size of YYARG. */
+  int yycount = 0;
+  /* Cumulated lengths of YYARG.  */
+  YYPTRDIFF_T yysize = 0;
+
+  /* There are many possibilities here to consider:
+     - If this state is a consistent state with a default action, then
+       the only way this function was invoked is if the default action
+       is an error action.  In that case, don't check for expected
+       tokens because there are none.
+     - The only way there can be no lookahead present (in yychar) is if
+       this state is a consistent state with a default action.  Thus,
+       detecting the absence of a lookahead is sufficient to determine
+       that there is no unexpected or expected token to report.  In that
+       case, just report a simple "syntax error".
+     - Don't assume there isn't a lookahead just because this state is a
+       consistent state with a default action.  There might have been a
+       previous inconsistent state, consistent state with a non-default
+       action, or user semantic action that manipulated yychar.
+     - Of course, the expected token list depends on states to have
+       correct lookahead information, and it depends on the parser not
+       to perform extra reductions after fetching a lookahead from the
+       scanner and before detecting a syntax error.  Thus, state merging
+       (from LALR or IELR) and default reductions corrupt the expected
+       token list.  However, the list is correct for canonical LR with
+       one exception: it will still contain any token that will not be
+       accepted due to an error action in a later state.
+  */
+  if (yytoken != YYEMPTY)
+    {
+      int yyn = yypact[+*yyssp];
+      YYPTRDIFF_T yysize0 = yytnamerr (YY_NULLPTR, yytname[yytoken]);
+      yysize = yysize0;
+      yyarg[yycount++] = yytname[yytoken];
+      if (!yypact_value_is_default (yyn))
+        {
+          /* Start YYX at -YYN if negative to avoid negative indexes in
+             YYCHECK.  In other words, skip the first -YYN actions for
+             this state because they are default actions.  */
+          int yyxbegin = yyn < 0 ? -yyn : 0;
+          /* Stay within bounds of both yycheck and yytname.  */
+          int yychecklim = YYLAST - yyn + 1;
+          int yyxend = yychecklim < YYNTOKENS ? yychecklim : YYNTOKENS;
+          int yyx;
+
+          for (yyx = yyxbegin; yyx < yyxend; ++yyx)
+            if (yycheck[yyx + yyn] == yyx && yyx != YYTERROR
+                && !yytable_value_is_error (yytable[yyx + yyn]))
+              {
+                if (yycount == YYERROR_VERBOSE_ARGS_MAXIMUM)
+                  {
+                    yycount = 1;
+                    yysize = yysize0;
+                    break;
+                  }
+                yyarg[yycount++] = yytname[yyx];
+                {
+                  YYPTRDIFF_T yysize1
+                    = yysize + yytnamerr (YY_NULLPTR, yytname[yyx]);
+                  if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+                    yysize = yysize1;
+                  else
+                    return 2;
+                }
+              }
+        }
+    }
+
+  switch (yycount)
+    {
+# define YYCASE_(N, S)                      \
+      case N:                               \
+        yyformat = S;                       \
+      break
+    default: /* Avoid compiler warnings. */
+      YYCASE_(0, YY_("syntax error"));
+      YYCASE_(1, YY_("syntax error, unexpected %s"));
+      YYCASE_(2, YY_("syntax error, unexpected %s, expecting %s"));
+      YYCASE_(3, YY_("syntax error, unexpected %s, expecting %s or %s"));
+      YYCASE_(4, YY_("syntax error, unexpected %s, expecting %s or %s or %s"));
+      YYCASE_(5, YY_("syntax error, unexpected %s, expecting %s or %s or %s or %s"));
+# undef YYCASE_
+    }
+
+  {
+    /* Don't count the "%s"s in the final size, but reserve room for
+       the terminator.  */
+    YYPTRDIFF_T yysize1 = yysize + (yystrlen (yyformat) - 2 * yycount) + 1;
+    if (yysize <= yysize1 && yysize1 <= YYSTACK_ALLOC_MAXIMUM)
+      yysize = yysize1;
+    else
+      return 2;
+  }
+
+  if (*yymsg_alloc < yysize)
+    {
+      *yymsg_alloc = 2 * yysize;
+      if (! (yysize <= *yymsg_alloc
+             && *yymsg_alloc <= YYSTACK_ALLOC_MAXIMUM))
+        *yymsg_alloc = YYSTACK_ALLOC_MAXIMUM;
+      return 1;
+    }
+
+  /* Avoid sprintf, as that infringes on the user's name space.
+     Don't have undefined behavior even if the translation
+     produced a string with the wrong number of "%s"s.  */
+  {
+    char *yyp = *yymsg;
+    int yyi = 0;
+    while ((*yyp = *yyformat) != '\0')
+      if (*yyp == '%' && yyformat[1] == 's' && yyi < yycount)
+        {
+          yyp += yytnamerr (yyp, yyarg[yyi++]);
+          yyformat += 2;
+        }
+      else
+        {
+          ++yyp;
+          ++yyformat;
+        }
+  }
+  return 0;
+}
+#endif /* YYERROR_VERBOSE */
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg,
-            yysymbol_kind_t yykind, YYSTYPE *yyvaluep)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)
 {
-  YY_USE (yyvaluep);
+  YYUSE (yyvaluep);
   if (!yymsg)
     yymsg = "Deleting";
-  YY_SYMBOL_PRINT (yymsg, yykind, yyvaluep, yylocationp);
+  YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
   YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
-  YY_USE (yykind);
+  YYUSE (yytype);
   YY_IGNORE_MAYBE_UNINITIALIZED_END
 }
 
 
-/* Lookahead token kind.  */
+
+
+/* The lookahead symbol.  */
 int yychar;
 
 /* The semantic value of the lookahead symbol.  */
 YYSTYPE yylval;
 /* Number of syntax errors so far.  */
 int yynerrs;
-
-
 
 
 /*----------.
@@ -1096,36 +1281,43 @@ int yynerrs;
 int
 yyparse (void)
 {
-    yy_state_fast_t yystate = 0;
+    yy_state_fast_t yystate;
     /* Number of tokens to shift before error messages enabled.  */
-    int yyerrstatus = 0;
+    int yyerrstatus;
 
-    /* Refer to the stacks through separate pointers, to allow yyoverflow
+    /* The stacks and their tools:
+       'yyss': related to states.
+       'yyvs': related to semantic values.
+
+       Refer to the stacks through separate pointers, to allow yyoverflow
        to reallocate them elsewhere.  */
 
-    /* Their size.  */
-    YYPTRDIFF_T yystacksize = YYINITDEPTH;
-
-    /* The state stack: array, bottom, top.  */
+    /* The state stack.  */
     yy_state_t yyssa[YYINITDEPTH];
-    yy_state_t *yyss = yyssa;
-    yy_state_t *yyssp = yyss;
+    yy_state_t *yyss;
+    yy_state_t *yyssp;
 
-    /* The semantic value stack: array, bottom, top.  */
+    /* The semantic value stack.  */
     YYSTYPE yyvsa[YYINITDEPTH];
-    YYSTYPE *yyvs = yyvsa;
-    YYSTYPE *yyvsp = yyvs;
+    YYSTYPE *yyvs;
+    YYSTYPE *yyvsp;
+
+    YYPTRDIFF_T yystacksize;
 
   int yyn;
-  /* The return value of yyparse.  */
   int yyresult;
-  /* Lookahead symbol kind.  */
-  yysymbol_kind_t yytoken = YYSYMBOL_YYEMPTY;
+  /* Lookahead token as an internal (translated) token number.  */
+  int yytoken = 0;
   /* The variables used to return semantic value and location from the
      action routines.  */
   YYSTYPE yyval;
 
-
+#if YYERROR_VERBOSE
+  /* Buffer for error messages, and its allocated size.  */
+  char yymsgbuf[128];
+  char *yymsg = yymsgbuf;
+  YYPTRDIFF_T yymsg_alloc = sizeof yymsgbuf;
+#endif
 
 #define YYPOPSTACK(N)   (yyvsp -= (N), yyssp -= (N))
 
@@ -1133,10 +1325,16 @@ yyparse (void)
      Keep to zero when no symbol should be popped.  */
   int yylen = 0;
 
+  yyssp = yyss = yyssa;
+  yyvsp = yyvs = yyvsa;
+  yystacksize = YYINITDEPTH;
+
   YYDPRINTF ((stderr, "Starting parse\n"));
 
+  yystate = 0;
+  yyerrstatus = 0;
+  yynerrs = 0;
   yychar = YYEMPTY; /* Cause a token to be read.  */
-
   goto yysetstate;
 
 
@@ -1158,11 +1356,10 @@ yysetstate:
   YY_IGNORE_USELESS_CAST_BEGIN
   *yyssp = YY_CAST (yy_state_t, yystate);
   YY_IGNORE_USELESS_CAST_END
-  YY_STACK_PRINT (yyss, yyssp);
 
   if (yyss + yystacksize - 1 <= yyssp)
 #if !defined yyoverflow && !defined YYSTACK_RELOCATE
-    YYNOMEM;
+    goto yyexhaustedlab;
 #else
     {
       /* Get the current used size of the three stacks, in elements.  */
@@ -1190,7 +1387,7 @@ yysetstate:
 # else /* defined YYSTACK_RELOCATE */
       /* Extend the stack our own way.  */
       if (YYMAXDEPTH <= yystacksize)
-        YYNOMEM;
+        goto yyexhaustedlab;
       yystacksize *= 2;
       if (YYMAXDEPTH < yystacksize)
         yystacksize = YYMAXDEPTH;
@@ -1201,10 +1398,10 @@ yysetstate:
           YY_CAST (union yyalloc *,
                    YYSTACK_ALLOC (YY_CAST (YYSIZE_T, YYSTACK_BYTES (yystacksize))));
         if (! yyptr)
-          YYNOMEM;
+          goto yyexhaustedlab;
         YYSTACK_RELOCATE (yyss_alloc, yyss);
         YYSTACK_RELOCATE (yyvs_alloc, yyvs);
-#  undef YYSTACK_RELOCATE
+# undef YYSTACK_RELOCATE
         if (yyss1 != yyssa)
           YYSTACK_FREE (yyss1);
       }
@@ -1222,7 +1419,6 @@ yysetstate:
         YYABORT;
     }
 #endif /* !defined yyoverflow && !defined YYSTACK_RELOCATE */
-
 
   if (yystate == YYFINAL)
     YYACCEPT;
@@ -1244,28 +1440,17 @@ yybackup:
 
   /* Not known => get a lookahead token if don't already have one.  */
 
-  /* YYCHAR is either empty, or end-of-input, or a valid lookahead.  */
+  /* YYCHAR is either YYEMPTY or YYEOF or a valid lookahead symbol.  */
   if (yychar == YYEMPTY)
     {
-      YYDPRINTF ((stderr, "Reading a token\n"));
+      YYDPRINTF ((stderr, "Reading a token: "));
       yychar = yylex ();
     }
 
   if (yychar <= YYEOF)
     {
-      yychar = YYEOF;
-      yytoken = YYSYMBOL_YYEOF;
+      yychar = yytoken = YYEOF;
       YYDPRINTF ((stderr, "Now at end of input.\n"));
-    }
-  else if (yychar == YYerror)
-    {
-      /* The scanner already issued an error message, process directly
-         to error recovery.  But do not keep the error token as
-         lookahead, it is too special and may lead us to an endless
-         loop in error recovery. */
-      yychar = YYUNDEF;
-      yytoken = YYSYMBOL_YYerror;
-      goto yyerrlab1;
     }
   else
     {
@@ -1335,7 +1520,7 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 2: /* $@1: %empty  */
+  case 2:
 #line 89 "compilador.y"
              {
              geraCodigo (NULL, "INPP");
@@ -1343,20 +1528,20 @@ yyreduce:
              p_rotulos = inicializa_rotulos();
              nivel_lexico = 0;
              }
-#line 1347 "compilador.tab.c"
+#line 1532 "compilador.tab.c"
     break;
 
-  case 3: /* programa: $@1 PROGRAM IDENT ABRE_PARENTESES input_idents FECHA_PARENTESES PONTO_E_VIRGULA bloco PONTO  */
+  case 3:
 #line 97 "compilador.y"
                          {
              sprintf (mepa_buf, "DMEM %d", num_vars_por_nivel[0]);
              geraCodigo (NULL, mepa_buf);
              geraCodigo (NULL, "PARA");
              }
-#line 1357 "compilador.tab.c"
+#line 1542 "compilador.tab.c"
     break;
 
-  case 5: /* $@2: %empty  */
+  case 5:
 #line 111 "compilador.y"
             {
             //fprintf(stderr,"COISA DE TESTE \n");
@@ -1365,35 +1550,35 @@ yyreduce:
             geraCodigo (NULL, mepa_buf);
             nivel_lexico++;
             }
-#line 1369 "compilador.tab.c"
+#line 1554 "compilador.tab.c"
     break;
 
-  case 6: /* $@3: %empty  */
+  case 6:
 #line 119 "compilador.y"
             {
             nivel_lexico --;
             rotulo_a = pegarrotulo(&p_rotulos);
             geraCodigo (rotulo_a.rotulo, "NADA");
             }
-#line 1379 "compilador.tab.c"
+#line 1564 "compilador.tab.c"
     break;
 
-  case 7: /* bloco: parte_declara_vars $@2 parte_declara_sub_rotinas $@3 comando_composto  */
+  case 7:
 #line 125 "compilador.y"
             {
             }
-#line 1386 "compilador.tab.c"
+#line 1571 "compilador.tab.c"
     break;
 
-  case 8: /* $@4: %empty  */
+  case 8:
 #line 132 "compilador.y"
                     {num_vars = 0;
 
                   }
-#line 1394 "compilador.tab.c"
+#line 1579 "compilador.tab.c"
     break;
 
-  case 9: /* parte_declara_vars: $@4 VAR declaracao_de_vars  */
+  case 9:
 #line 135 "compilador.y"
                                                                {
 					   sprintf(mepa_buf, "AMEM %d", num_vars);
@@ -1401,18 +1586,18 @@ yyreduce:
                   pilha_num_vars[ponteiro_pilha_num_vars] = num_vars;
 					   geraCodigo(NULL,mepa_buf);
 					   }
-#line 1405 "compilador.tab.c"
+#line 1590 "compilador.tab.c"
     break;
 
-  case 13: /* $@5: %empty  */
+  case 13:
 #line 150 "compilador.y"
                    {
                      num_carrega_tipo = 0;
                   }
-#line 1413 "compilador.tab.c"
+#line 1598 "compilador.tab.c"
     break;
 
-  case 15: /* tipo: TIPO  */
+  case 15:
 #line 157 "compilador.y"
                    {
                      if (!strcmp(token, "integer"))
@@ -1422,48 +1607,46 @@ yyreduce:
                      else
                         perror("TIPO ERRADO, CORRIGE, TA ERRADO");
                      }
-#line 1426 "compilador.tab.c"
+#line 1611 "compilador.tab.c"
     break;
 
-  case 16: /* lista_idents: lista_idents VIRGULA IDENT  */
+  case 16:
 #line 169 "compilador.y"
                                          {
-               cc.var.deslocamento = num_vars;
                printf("adicionado token [%s]\n", token);
-               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc, num_vars);
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
                num_vars_por_nivel[nivel_lexico]++;
                }
-#line 1440 "compilador.tab.c"
+#line 1624 "compilador.tab.c"
     break;
 
-  case 17: /* lista_idents: IDENT  */
-#line 178 "compilador.y"
+  case 17:
+#line 177 "compilador.y"
                     {
-               cc.var.deslocamento = num_vars;
                printf("adicionado token [%s]\n", token);
-               s = cria_simbolo(token, variavel, nivel_lexico, cc);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc, num_vars);
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
                num_vars_por_nivel[nivel_lexico]++;
                }
-#line 1454 "compilador.tab.c"
+#line 1637 "compilador.tab.c"
     break;
 
-  case 22: /* $@6: %empty  */
-#line 200 "compilador.y"
+  case 22:
+#line 198 "compilador.y"
                                      {
                         strcpy(proc_name, token);
                         num_params = 0;
                      }
-#line 1463 "compilador.tab.c"
+#line 1646 "compilador.tab.c"
     break;
 
-  case 23: /* $@7: %empty  */
-#line 204 "compilador.y"
+  case 23:
+#line 202 "compilador.y"
                                                 {
                         rotulo_a = gerarrotulo(&p_rotulos);
                         sprintf(mepa_buf, "ENPR %d", nivel_lexico);
@@ -1477,9 +1660,9 @@ yyreduce:
                         // for(int i = 0; i < num_params; ++i){
                         //    printf("proc.lista[%d] tem tipo %d e passado por %d \n", i, ti.proc.lista[i].tipo, ti.proc.lista[i].passagem);
                         // }
-                        printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, conteudo.var.deslocamento);
+                        //printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, deslocamento);
 
-                        s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo);
+                        s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo, 0);
 
                         adicionar(&tabela, s);
 
@@ -1493,17 +1676,17 @@ yyreduce:
                         //pilha_int_empilhar(&pilha_amem, num_params);
 
                      }
-#line 1497 "compilador.tab.c"
+#line 1680 "compilador.tab.c"
     break;
 
-  case 24: /* $@8: %empty  */
-#line 232 "compilador.y"
+  case 24:
+#line 230 "compilador.y"
                                        {imprime_tabela(&tabela);}
-#line 1503 "compilador.tab.c"
+#line 1686 "compilador.tab.c"
     break;
 
-  case 25: /* $@9: %empty  */
-#line 232 "compilador.y"
+  case 25:
+#line 230 "compilador.y"
                                                                        {
 
                            sprintf(mepa_buf, "DMEM %d", pilha_num_vars[ponteiro_pilha_num_vars]);
@@ -1512,27 +1695,31 @@ yyreduce:
                            sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, num_params);
                            geraCodigo(NULL, mepa_buf);
                            rotulo_a = pegarrotulo(&p_rotulos);
+                           remover_ate(&tabela,proc_name);
+
+
+                           //falta remover os simbolos da tabela de simbolos
                      }
-#line 1517 "compilador.tab.c"
+#line 1704 "compilador.tab.c"
     break;
 
-  case 27: /* $@10: %empty  */
-#line 244 "compilador.y"
+  case 27:
+#line 246 "compilador.y"
                                {num_params = 0;}
-#line 1523 "compilador.tab.c"
+#line 1710 "compilador.tab.c"
     break;
 
-  case 30: /* $@11: %empty  */
-#line 249 "compilador.y"
+  case 30:
+#line 251 "compilador.y"
                               {
                   strcpy(proc_name, token);
                   num_params = 0;
                }
-#line 1532 "compilador.tab.c"
+#line 1719 "compilador.tab.c"
     break;
 
-  case 31: /* $@12: %empty  */
-#line 252 "compilador.y"
+  case 31:
+#line 254 "compilador.y"
                                             {
                   rotulo_a = gerarrotulo(&p_rotulos);
                   sprintf(mepa_buf, "ENPR %d", nivel_lexico);
@@ -1546,57 +1733,57 @@ yyreduce:
                   // for(int i = 0; i < num_params; ++i){
                   //    printf("proc.lista[%d] tem tipo %d e passado por %d \n", i, ti.proc.lista[i].tipo, ti.proc.lista[i].passagem);
                   // }
-                  printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, conteudo.var.deslocamento);
+                  //printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, deslocamento);
 
-                  s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo);
+                  s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo, 0);
 
                   adicionar(&tabela, s);
 
                   // atribui o deslocamento correto e coloca na pilha os símbolos
                   for(int i = num_params-1; i >= -1; --i){
-                     lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
-                     printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
+                     lista_simbolos[i].deslocamento = -4 + (i - (num_params-1)); 
+                     printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].deslocamento);
                      adicionar(&tabela, lista_simbolos[i]);
                   }
                   // rot_num++; // para o desvio de procedures dentro dessa procedure
                   //pilha_int_empilhar(&pilha_amem, num_params);
                }
-#line 1565 "compilador.tab.c"
+#line 1752 "compilador.tab.c"
     break;
 
-  case 32: /* $@13: %empty  */
-#line 279 "compilador.y"
+  case 32:
+#line 281 "compilador.y"
                                                         {
                   sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, 9999);
                   geraCodigo(NULL, mepa_buf);
                }
-#line 1574 "compilador.tab.c"
+#line 1761 "compilador.tab.c"
     break;
 
-  case 34: /* lista_params_formais: lista_params_formais VIRGULA parametro  */
-#line 287 "compilador.y"
+  case 34:
+#line 289 "compilador.y"
                                                                {num_params++;}
-#line 1580 "compilador.tab.c"
+#line 1767 "compilador.tab.c"
     break;
 
-  case 35: /* lista_params_formais: parametro  */
-#line 288 "compilador.y"
+  case 35:
+#line 290 "compilador.y"
                                     {num_params++;}
-#line 1586 "compilador.tab.c"
+#line 1773 "compilador.tab.c"
     break;
 
-  case 36: /* $@14: %empty  */
-#line 292 "compilador.y"
+  case 36:
+#line 294 "compilador.y"
                    {
             cc.param.passagem = parametro_ref;
             printf("adicionado token [%s]\n", token);
-            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc, -4 - num_params);
          }
-#line 1596 "compilador.tab.c"
+#line 1783 "compilador.tab.c"
     break;
 
-  case 37: /* parametro: VAR IDENT $@14 DOIS_PONTOS TIPO  */
-#line 296 "compilador.y"
+  case 37:
+#line 298 "compilador.y"
                             {
             if (!strcmp(token, "integer"))
                s.conteudo.param.tipo = pas_integer;
@@ -1608,21 +1795,23 @@ yyreduce:
             }
             adicionar(&tabela, s);
          }
-#line 1612 "compilador.tab.c"
+#line 1799 "compilador.tab.c"
     break;
 
-  case 38: /* $@15: %empty  */
-#line 307 "compilador.y"
+  case 38:
+#line 309 "compilador.y"
                   {
             cc.param.passagem = parametro_copia;
             printf("adicionado token [%s]\n", token);
-            s = cria_simbolo(token, parametro, nivel_lexico, cc);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc, -4 - num_params);
+            printf("OI %d\n\n\n", num_params);
+            printf("TCHAU %d\n\n\n", s.deslocamento);
          }
-#line 1622 "compilador.tab.c"
+#line 1811 "compilador.tab.c"
     break;
 
-  case 39: /* parametro: IDENT $@15 DOIS_PONTOS TIPO  */
-#line 311 "compilador.y"
+  case 39:
+#line 315 "compilador.y"
                             {
             if (!strcmp(token, "integer"))
                s.conteudo.param.tipo = pas_integer;
@@ -1634,17 +1823,17 @@ yyreduce:
             }
             adicionar(&tabela, s);
          }
-#line 1638 "compilador.tab.c"
+#line 1827 "compilador.tab.c"
     break;
 
-  case 43: /* comando: atribui_ou_func  */
-#line 333 "compilador.y"
+  case 43:
+#line 337 "compilador.y"
                           {printf("ATRIBUICAO/FUNCAO ESCOLHIDA \n");}
-#line 1644 "compilador.tab.c"
+#line 1833 "compilador.tab.c"
     break;
 
-  case 49: /* $@16: %empty  */
-#line 344 "compilador.y"
+  case 49:
+#line 348 "compilador.y"
                {
             if((esquerdo_func[esquerdo_recursao_func] = busca(&tabela, token)) == NULL){
                printf("ERRO: identificador {%s} nao encontrado/nao declarado", token );
@@ -1654,43 +1843,43 @@ yyreduce:
             printf("INDO PARA O ATRIBUI OU PARAMETROS\n");
             printf("identificador achado = %s\n", esquerdo_func[esquerdo_recursao_func-1]->identificador);
          }
-#line 1658 "compilador.tab.c"
+#line 1847 "compilador.tab.c"
     break;
 
-  case 50: /* atribui_ou_func: IDENT $@16 continua_atibui_ou_func  */
-#line 353 "compilador.y"
+  case 50:
+#line 357 "compilador.y"
                                 {
             if ((yyvsp[0].int_val) == 1 )
                 esquerdo_recursao_func--;
          }
-#line 1667 "compilador.tab.c"
+#line 1856 "compilador.tab.c"
     break;
 
-  case 51: /* continua_atibui_ou_func: ATRIBUICAO atribui_contiunuacao  */
-#line 360 "compilador.y"
+  case 51:
+#line 364 "compilador.y"
                                                   {(yyval.int_val) = 1; printf("ATRIBUICAO ESCOLHIDA \n");}
-#line 1673 "compilador.tab.c"
+#line 1862 "compilador.tab.c"
     break;
 
-  case 52: /* continua_atibui_ou_func: parametros_ou_nada  */
-#line 361 "compilador.y"
-                                       {(yyval.int_val) = 2; printf( "FUNCAO ESCOLHIDA \n");}
-#line 1679 "compilador.tab.c"
-    break;
-
-  case 53: /* $@17: %empty  */
+  case 52:
 #line 365 "compilador.y"
-                      { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
-#line 1685 "compilador.tab.c"
+                                       {(yyval.int_val) = 2; printf( "FUNCAO ESCOLHIDA \n");}
+#line 1868 "compilador.tab.c"
     break;
 
-  case 54: /* atribui_contiunuacao: $@17 expressao  */
-#line 366 "compilador.y"
+  case 53:
+#line 369 "compilador.y"
+                      { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
+#line 1874 "compilador.tab.c"
+    break;
+
+  case 54:
+#line 370 "compilador.y"
                             {
                      
                      if(esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
                         if((yyvsp[0].int_val) == esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo){
-                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.deslocamento );
+                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                            geraCodigo(NULL, mepa_buf);
                         }else{
                            printf ("ERRO: expresao entre tipos incompativeis \n");
@@ -1699,10 +1888,10 @@ yyreduce:
                      }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
                         if((yyvsp[0].int_val) == esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo){
                            if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia ){
-                              sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                              sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                               geraCodigo(NULL, mepa_buf);
                            }else if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
-                              sprintf(mepa_buf, "ARMI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                              sprintf(mepa_buf, "ARMI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                               geraCodigo(NULL, mepa_buf);
                            }
                         }else {
@@ -1711,11 +1900,11 @@ yyreduce:
                         }
                      } 
                   }
-#line 1715 "compilador.tab.c"
+#line 1904 "compilador.tab.c"
     break;
 
-  case 55: /* $@18: %empty  */
-#line 397 "compilador.y"
+  case 55:
+#line 401 "compilador.y"
                      {
                   if((esquerdo_func[esquerdo_recursao_func] = busca(&tabela, token)) == NULL){
                         printf("falha ao procurar token %s\n", token);
@@ -1724,40 +1913,40 @@ yyreduce:
                   esquerdo_recursao_func++;  //evita de esquerdo_func se sobrescrito dentro de uma chamada recursiva de funcao_ou_ident
                   printf("identificador achado = %s\n", esquerdo_func[esquerdo_recursao_func-1]->identificador);
                }
-#line 1728 "compilador.tab.c"
+#line 1917 "compilador.tab.c"
     break;
 
-  case 56: /* funcao_ou_ident: IDENT $@18 parametros_ou_nada  */
-#line 405 "compilador.y"
+  case 56:
+#line 409 "compilador.y"
                                  {
                   if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
-                     sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.deslocamento );
+                     sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                      geraCodigo(NULL, mepa_buf);
                      (yyval.int_val) = esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo;
                   }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
                      if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia){
-                        sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                        sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                         geraCodigo(NULL, mepa_buf);
                         (yyval.int_val) = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }else if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
-                        sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.deslocamento );
+                        sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                         geraCodigo(NULL, mepa_buf);
                         (yyval.int_val) = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }
                   }
                   esquerdo_recursao_func--;
                }
-#line 1751 "compilador.tab.c"
+#line 1940 "compilador.tab.c"
     break;
 
-  case 57: /* $@19: %empty  */
-#line 426 "compilador.y"
+  case 57:
+#line 430 "compilador.y"
                                                  {num_params = 0;}
-#line 1757 "compilador.tab.c"
+#line 1946 "compilador.tab.c"
     break;
 
-  case 58: /* parametros_ou_nada: empilha_retorno ABRE_PARENTESES $@19 lista_params FECHA_PARENTESES  */
-#line 426 "compilador.y"
+  case 58:
+#line 430 "compilador.y"
                                                                                                 {
                  if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao || esquerdo_func[esquerdo_recursao_func-1]->categoria == procedimento){
                      (yyval.int_val) = undefined_type; //caso seja procedure
@@ -1773,11 +1962,11 @@ yyreduce:
                      exit(1);
                   }
                 }
-#line 1777 "compilador.tab.c"
+#line 1966 "compilador.tab.c"
     break;
 
-  case 59: /* parametros_ou_nada: empilha_retorno  */
-#line 441 "compilador.y"
+  case 59:
+#line 445 "compilador.y"
                                   {
                   if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao || esquerdo_func[esquerdo_recursao_func-1]->categoria == procedimento){
                      (yyval.int_val) = undefined_type; //caso seja procedure
@@ -1789,40 +1978,40 @@ yyreduce:
                      geraCodigo(NULL, mepa_buf);
                   }
                 }
-#line 1793 "compilador.tab.c"
+#line 1982 "compilador.tab.c"
     break;
 
-  case 60: /* empilha_retorno: %empty  */
-#line 454 "compilador.y"
+  case 60:
+#line 458 "compilador.y"
                   {
                      if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao){
                         geraCodigo(NULL, "AMEM 1");
                         (yyval.int_val) = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
                      }
                   }
-#line 1804 "compilador.tab.c"
+#line 1993 "compilador.tab.c"
     break;
 
-  case 61: /* lista_params: lista_params VIRGULA expressao  */
-#line 463 "compilador.y"
+  case 61:
+#line 467 "compilador.y"
                                               {num_params++; printf("%dAMAMA\n",num_params);}
-#line 1810 "compilador.tab.c"
+#line 1999 "compilador.tab.c"
     break;
 
-  case 62: /* $@20: %empty  */
-#line 464 "compilador.y"
+  case 62:
+#line 468 "compilador.y"
                  {printf("%d\n",num_params); }
-#line 1816 "compilador.tab.c"
+#line 2005 "compilador.tab.c"
     break;
 
-  case 63: /* lista_params: $@20 expressao  */
-#line 464 "compilador.y"
+  case 63:
+#line 468 "compilador.y"
                                                         {num_params++; printf("%dSUGA\n",num_params);}
-#line 1822 "compilador.tab.c"
+#line 2011 "compilador.tab.c"
     break;
 
-  case 65: /* $@21: %empty  */
-#line 473 "compilador.y"
+  case 65:
+#line 477 "compilador.y"
                       {
             if((yyvsp[0].int_val) == pas_boolean){
                rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
@@ -1833,11 +2022,11 @@ yyreduce:
                exit(1);
             }
          }
-#line 1837 "compilador.tab.c"
+#line 2026 "compilador.tab.c"
     break;
 
-  case 66: /* if_then: IF expressao $@21 THEN comando  */
-#line 483 "compilador.y"
+  case 66:
+#line 487 "compilador.y"
                       {
             rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
             sprintf(mepa_buf, "DSVS %s",rotulo_a.rotulo);
@@ -1845,37 +2034,37 @@ yyreduce:
             rotulo_a = pegarrotulo(&p_rotulos);
             geraCodigo (rotulo_a.rotulo, "NADA"); 
          }
-#line 1849 "compilador.tab.c"
+#line 2038 "compilador.tab.c"
     break;
 
-  case 67: /* cond_else: else_ou_nada  */
-#line 491 "compilador.y"
+  case 67:
+#line 495 "compilador.y"
                               {
                         //fprintf(stderr, "TERMONOU O BHUR \n");
                         rotulo_a = pegarrotulo(&p_rotulos);
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
                   }
-#line 1859 "compilador.tab.c"
+#line 2048 "compilador.tab.c"
     break;
 
-  case 68: /* $@22: %empty  */
-#line 499 "compilador.y"
+  case 68:
+#line 503 "compilador.y"
                     { //fprintf(stderr, "TERMONOU o BRUH2 \n"); 
                }
-#line 1866 "compilador.tab.c"
+#line 2055 "compilador.tab.c"
     break;
 
-  case 70: /* $@23: %empty  */
-#line 505 "compilador.y"
+  case 70:
+#line 509 "compilador.y"
                    {
                         rotulo_a = gerarrotulo(&p_rotulos); //cria um rotulo mas esse e o proximo rotulo vai ser usado como fila e nao como pilha
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
                      }
-#line 1875 "compilador.tab.c"
+#line 2064 "compilador.tab.c"
     break;
 
-  case 72: /* $@24: %empty  */
-#line 512 "compilador.y"
+  case 72:
+#line 516 "compilador.y"
                                {
                         if((yyvsp[0].int_val) == pas_boolean){
                            rotulo_a = gerarrotulo(&p_rotulos); // segundo rotulo que vai se usado depois
@@ -1885,11 +2074,11 @@ yyreduce:
                            exit(1);
                         }   
                      }
-#line 1889 "compilador.tab.c"
+#line 2078 "compilador.tab.c"
     break;
 
-  case 73: /* while_resto: expressao $@24 DO comando  */
-#line 521 "compilador.y"
+  case 73:
+#line 525 "compilador.y"
                                {
                         rotulo_a = p_rotulos->pilha[p_rotulos->topo-2];
                         sprintf(mepa_buf, "DSVS %s",rotulo_a.rotulo);
@@ -1898,77 +2087,77 @@ yyreduce:
                         geraCodigo (rotulo_a.rotulo, "NADA"); 
                         remove_n(&p_rotulos, 2);
                      }
-#line 1902 "compilador.tab.c"
+#line 2091 "compilador.tab.c"
     break;
 
-  case 74: /* expressao: expressao_simples relacao expressao_simples  */
-#line 533 "compilador.y"
+  case 74:
+#line 537 "compilador.y"
                                                        {
                geraCodigo(NULL, (yyvsp[-1].str));
                if ((yyvsp[-2].int_val) == (yyvsp[0].int_val))
                   (yyval.int_val) = pas_boolean;
                else{
-                  printf ("ERRO: expresao entre tipos incompativeis \n");
+                  printf ("ERRO: expressao entre tipos incompativeis \n");
                   exit(1);
                }
             }
-#line 1916 "compilador.tab.c"
+#line 2105 "compilador.tab.c"
     break;
 
-  case 75: /* expressao: expressao_simples  */
-#line 542 "compilador.y"
+  case 75:
+#line 546 "compilador.y"
                                 {
                (yyval.int_val) = (yyvsp[0].int_val);
             }
-#line 1924 "compilador.tab.c"
+#line 2113 "compilador.tab.c"
     break;
 
-  case 76: /* relacao: IGUAL  */
-#line 549 "compilador.y"
-                        { (yyval.str) = "CMIG"; }
-#line 1930 "compilador.tab.c"
-    break;
-
-  case 77: /* relacao: MENOR  */
-#line 550 "compilador.y"
-                        { (yyval.str) = "CMME"; }
-#line 1936 "compilador.tab.c"
-    break;
-
-  case 78: /* relacao: MAIOR  */
-#line 551 "compilador.y"
-                        { (yyval.str) = "CMMA"; }
-#line 1942 "compilador.tab.c"
-    break;
-
-  case 79: /* relacao: MAIOR_IGUAL  */
-#line 552 "compilador.y"
-                        { (yyval.str) = "CMAG"; }
-#line 1948 "compilador.tab.c"
-    break;
-
-  case 80: /* relacao: MENOR_IGUAL  */
+  case 76:
 #line 553 "compilador.y"
-                        { (yyval.str) = "CMEG"; }
-#line 1954 "compilador.tab.c"
+                        { (yyval.str) = "CMIG"; }
+#line 2119 "compilador.tab.c"
     break;
 
-  case 81: /* relacao: DIFERENTE  */
+  case 77:
 #line 554 "compilador.y"
-                        { (yyval.str) = "CMDG"; }
-#line 1960 "compilador.tab.c"
+                        { (yyval.str) = "CMME"; }
+#line 2125 "compilador.tab.c"
     break;
 
-  case 82: /* expressao_simples: termo  */
-#line 559 "compilador.y"
+  case 78:
+#line 555 "compilador.y"
+                        { (yyval.str) = "CMMA"; }
+#line 2131 "compilador.tab.c"
+    break;
+
+  case 79:
+#line 556 "compilador.y"
+                        { (yyval.str) = "CMAG"; }
+#line 2137 "compilador.tab.c"
+    break;
+
+  case 80:
+#line 557 "compilador.y"
+                        { (yyval.str) = "CMEG"; }
+#line 2143 "compilador.tab.c"
+    break;
+
+  case 81:
+#line 558 "compilador.y"
+                        { (yyval.str) = "CMDG"; }
+#line 2149 "compilador.tab.c"
+    break;
+
+  case 82:
+#line 563 "compilador.y"
                      {
                   (yyval.int_val) = (yyvsp[0].int_val);
                }
-#line 1968 "compilador.tab.c"
+#line 2157 "compilador.tab.c"
     break;
 
-  case 83: /* expressao_simples: MAIS termo  */
-#line 562 "compilador.y"
+  case 83:
+#line 566 "compilador.y"
                             {
                   if ((yyvsp[0].int_val) == pas_integer)
                      (yyval.int_val) = (yyvsp[0].int_val);
@@ -1977,11 +2166,11 @@ yyreduce:
                      exit(1);
                   }
                }
-#line 1981 "compilador.tab.c"
+#line 2170 "compilador.tab.c"
     break;
 
-  case 84: /* expressao_simples: MENOS termo  */
-#line 570 "compilador.y"
+  case 84:
+#line 574 "compilador.y"
                              {
                   geraCodigo(NULL, "INVR");
                   if ((yyvsp[0].int_val) == pas_integer)
@@ -1991,11 +2180,11 @@ yyreduce:
                      exit(1);
                   }
                }
-#line 1995 "compilador.tab.c"
+#line 2184 "compilador.tab.c"
     break;
 
-  case 85: /* expressao_simples: expressao_simples MAIS termo  */
-#line 579 "compilador.y"
+  case 85:
+#line 583 "compilador.y"
                                                {
                   geraCodigo( NULL, "SOMA");
                   if ((yyvsp[-2].int_val) == (yyvsp[0].int_val) && (yyvsp[-2].int_val) == pas_integer)
@@ -2005,11 +2194,11 @@ yyreduce:
                      exit(1);
                   }
                }
-#line 2009 "compilador.tab.c"
+#line 2198 "compilador.tab.c"
     break;
 
-  case 86: /* expressao_simples: expressao_simples MENOS termo  */
-#line 588 "compilador.y"
+  case 86:
+#line 592 "compilador.y"
                                                {
                   geraCodigo( NULL, "SUBT");
                   if ((yyvsp[-2].int_val) == (yyvsp[0].int_val) && (yyvsp[-2].int_val) == pas_integer)
@@ -2019,11 +2208,11 @@ yyreduce:
                      exit(1);
                   }
                }
-#line 2023 "compilador.tab.c"
+#line 2212 "compilador.tab.c"
     break;
 
-  case 87: /* expressao_simples: expressao_simples OR termo  */
-#line 597 "compilador.y"
+  case 87:
+#line 601 "compilador.y"
                                             {
                   geraCodigo( NULL, "DISJ");
                   if ((yyvsp[-2].int_val) == (yyvsp[0].int_val) && (yyvsp[-2].int_val) == pas_boolean)
@@ -2033,19 +2222,19 @@ yyreduce:
                      exit(1);
                   }
                }
-#line 2037 "compilador.tab.c"
+#line 2226 "compilador.tab.c"
     break;
 
-  case 88: /* termo: fator  */
-#line 609 "compilador.y"
+  case 88:
+#line 613 "compilador.y"
              {
          (yyval.int_val) = (yyvsp[0].int_val);
       }
-#line 2045 "compilador.tab.c"
+#line 2234 "compilador.tab.c"
     break;
 
-  case 89: /* termo: termo DIV fator  */
-#line 612 "compilador.y"
+  case 89:
+#line 616 "compilador.y"
                          {
          geraCodigo( NULL, "DIVI");
          if ((yyvsp[-2].int_val) == (yyvsp[0].int_val) && (yyvsp[-2].int_val) == pas_integer)
@@ -2055,11 +2244,11 @@ yyreduce:
             exit(1);
          }
       }
-#line 2059 "compilador.tab.c"
+#line 2248 "compilador.tab.c"
     break;
 
-  case 90: /* termo: termo VEZES fator  */
-#line 621 "compilador.y"
+  case 90:
+#line 625 "compilador.y"
                            {
          geraCodigo( NULL, "MULT");
          if ((yyvsp[-2].int_val) == (yyvsp[0].int_val) && (yyvsp[-2].int_val) == pas_integer)
@@ -2069,11 +2258,11 @@ yyreduce:
             exit(1);
          }
       }
-#line 2073 "compilador.tab.c"
+#line 2262 "compilador.tab.c"
     break;
 
-  case 91: /* termo: termo AND fator  */
-#line 630 "compilador.y"
+  case 91:
+#line 634 "compilador.y"
                          {
           geraCodigo( NULL, "CONJ");
           if ((yyvsp[-2].int_val) == (yyvsp[0].int_val) && (yyvsp[-2].int_val) == pas_boolean)
@@ -2083,29 +2272,29 @@ yyreduce:
             exit(1);
           }
       }
-#line 2087 "compilador.tab.c"
+#line 2276 "compilador.tab.c"
     break;
 
-  case 92: /* fator: funcao_ou_ident  */
-#line 642 "compilador.y"
+  case 92:
+#line 646 "compilador.y"
                       {
         (yyval.int_val) = (yyvsp[0].int_val);
       }
-#line 2095 "compilador.tab.c"
+#line 2284 "compilador.tab.c"
     break;
 
-  case 93: /* fator: NUMERO  */
-#line 645 "compilador.y"
+  case 93:
+#line 649 "compilador.y"
                {
          sprintf (mepa_buf, "CRCT %d", atoi(token));
          geraCodigo(NULL, mepa_buf);
          (yyval.int_val) = pas_integer;
       }
-#line 2105 "compilador.tab.c"
+#line 2294 "compilador.tab.c"
     break;
 
-  case 94: /* fator: VALOR_BOOL  */
-#line 650 "compilador.y"
+  case 94:
+#line 654 "compilador.y"
                    {
          if(strcmp(token, "True") == 0)
             sprintf (mepa_buf, "CRCT %d", 1);
@@ -2114,19 +2303,19 @@ yyreduce:
          geraCodigo(NULL, mepa_buf);
          (yyval.int_val) = pas_boolean;
       }
-#line 2118 "compilador.tab.c"
+#line 2307 "compilador.tab.c"
     break;
 
-  case 95: /* fator: ABRE_PARENTESES expressao_simples FECHA_PARENTESES  */
-#line 658 "compilador.y"
+  case 95:
+#line 662 "compilador.y"
                                                           {
          (yyval.int_val) = (yyvsp[-1].int_val);
       }
-#line 2126 "compilador.tab.c"
+#line 2315 "compilador.tab.c"
     break;
 
-  case 96: /* fator: NOT fator  */
-#line 661 "compilador.y"
+  case 96:
+#line 665 "compilador.y"
                  {
          if((yyvsp[0].int_val) == pas_boolean){
             geraCodigo(NULL, "NEGA");
@@ -2135,27 +2324,27 @@ yyreduce:
          else
             exit(1);   
       }
-#line 2139 "compilador.tab.c"
+#line 2328 "compilador.tab.c"
     break;
 
-  case 100: /* parametro_leitura: IDENT  */
-#line 684 "compilador.y"
+  case 100:
+#line 688 "compilador.y"
                        {
                      geraCodigo(NULL, "LEIT");
                      printf("buscando token %s\n", token);
                      if((ps = busca(&tabela, token)) != NULL){
-                        sprintf(mepa_buf, "ARMZ %d, %d",ps->nivel , ps->conteudo.var.deslocamento );
+                        sprintf(mepa_buf, "ARMZ %d, %d",ps->nivel , ps->deslocamento );
                         geraCodigo(NULL, mepa_buf);
                      }else{
                         printf("falha ao procurar token %s\n", token);
                         exit(1);
                      }
                   }
-#line 2155 "compilador.tab.c"
+#line 2344 "compilador.tab.c"
     break;
 
-  case 104: /* parametro_escrita: expressao_simples  */
-#line 709 "compilador.y"
+  case 104:
+#line 713 "compilador.y"
                                     {
                      if ((yyvsp[0].int_val) != undefined_type)
                         geraCodigo(NULL, "IMPR");
@@ -2163,11 +2352,11 @@ yyreduce:
                         printf("parametro incompativel\n");
                      }   
                   }
-#line 2167 "compilador.tab.c"
+#line 2356 "compilador.tab.c"
     break;
 
 
-#line 2171 "compilador.tab.c"
+#line 2360 "compilador.tab.c"
 
       default: break;
     }
@@ -2182,10 +2371,11 @@ yyreduce:
      case of YYERROR or YYBACKUP, subsequent parser actions might lead
      to an incorrect destructor call or verbose syntax error message
      before the lookahead is translated.  */
-  YY_SYMBOL_PRINT ("-> $$ =", YY_CAST (yysymbol_kind_t, yyr1[yyn]), &yyval, &yyloc);
+  YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
 
   YYPOPSTACK (yylen);
   yylen = 0;
+  YY_STACK_PRINT (yyss, yyssp);
 
   *++yyvsp = yyval;
 
@@ -2209,13 +2399,49 @@ yyreduce:
 yyerrlab:
   /* Make sure we have latest lookahead translation.  See comments at
      user semantic actions for why this is necessary.  */
-  yytoken = yychar == YYEMPTY ? YYSYMBOL_YYEMPTY : YYTRANSLATE (yychar);
+  yytoken = yychar == YYEMPTY ? YYEMPTY : YYTRANSLATE (yychar);
+
   /* If not already recovering from an error, report this error.  */
   if (!yyerrstatus)
     {
       ++yynerrs;
+#if ! YYERROR_VERBOSE
       yyerror (YY_("syntax error"));
+#else
+# define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
+                                        yyssp, yytoken)
+      {
+        char const *yymsgp = YY_("syntax error");
+        int yysyntax_error_status;
+        yysyntax_error_status = YYSYNTAX_ERROR;
+        if (yysyntax_error_status == 0)
+          yymsgp = yymsg;
+        else if (yysyntax_error_status == 1)
+          {
+            if (yymsg != yymsgbuf)
+              YYSTACK_FREE (yymsg);
+            yymsg = YY_CAST (char *, YYSTACK_ALLOC (YY_CAST (YYSIZE_T, yymsg_alloc)));
+            if (!yymsg)
+              {
+                yymsg = yymsgbuf;
+                yymsg_alloc = sizeof yymsgbuf;
+                yysyntax_error_status = 2;
+              }
+            else
+              {
+                yysyntax_error_status = YYSYNTAX_ERROR;
+                yymsgp = yymsg;
+              }
+          }
+        yyerror (yymsgp);
+        if (yysyntax_error_status == 2)
+          goto yyexhaustedlab;
+      }
+# undef YYSYNTAX_ERROR
+#endif
     }
+
+
 
   if (yyerrstatus == 3)
     {
@@ -2249,7 +2475,6 @@ yyerrorlab:
      label yyerrorlab therefore never appears in user code.  */
   if (0)
     YYERROR;
-  ++yynerrs;
 
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYERROR.  */
@@ -2266,14 +2491,13 @@ yyerrorlab:
 yyerrlab1:
   yyerrstatus = 3;      /* Each real token shifted decrements this.  */
 
-  /* Pop stack until we find a state that shifts the error token.  */
   for (;;)
     {
       yyn = yypact[yystate];
       if (!yypact_value_is_default (yyn))
         {
-          yyn += YYSYMBOL_YYerror;
-          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYSYMBOL_YYerror)
+          yyn += YYTERROR;
+          if (0 <= yyn && yyn <= YYLAST && yycheck[yyn] == YYTERROR)
             {
               yyn = yytable[yyn];
               if (0 < yyn)
@@ -2287,7 +2511,7 @@ yyerrlab1:
 
 
       yydestruct ("Error: popping",
-                  YY_ACCESSING_SYMBOL (yystate), yyvsp);
+                  yystos[yystate], yyvsp);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -2299,7 +2523,7 @@ yyerrlab1:
 
 
   /* Shift the error token.  */
-  YY_SYMBOL_PRINT ("Shifting", YY_ACCESSING_SYMBOL (yyn), yyvsp, yylsp);
+  YY_SYMBOL_PRINT ("Shifting", yystos[yyn], yyvsp, yylsp);
 
   yystate = yyn;
   goto yynewstate;
@@ -2310,7 +2534,7 @@ yyerrlab1:
 `-------------------------------------*/
 yyacceptlab:
   yyresult = 0;
-  goto yyreturnlab;
+  goto yyreturn;
 
 
 /*-----------------------------------.
@@ -2318,22 +2542,24 @@ yyacceptlab:
 `-----------------------------------*/
 yyabortlab:
   yyresult = 1;
-  goto yyreturnlab;
+  goto yyreturn;
 
 
-/*-----------------------------------------------------------.
-| yyexhaustedlab -- YYNOMEM (memory exhaustion) comes here.  |
-`-----------------------------------------------------------*/
+#if !defined yyoverflow || YYERROR_VERBOSE
+/*-------------------------------------------------.
+| yyexhaustedlab -- memory exhaustion comes here.  |
+`-------------------------------------------------*/
 yyexhaustedlab:
   yyerror (YY_("memory exhausted"));
   yyresult = 2;
-  goto yyreturnlab;
+  /* Fall through.  */
+#endif
 
 
-/*----------------------------------------------------------.
-| yyreturnlab -- parsing is finished, clean up and return.  |
-`----------------------------------------------------------*/
-yyreturnlab:
+/*-----------------------------------------------------.
+| yyreturn -- parsing is finished, return the result.  |
+`-----------------------------------------------------*/
+yyreturn:
   if (yychar != YYEMPTY)
     {
       /* Make sure we have latest lookahead translation.  See comments at
@@ -2349,18 +2575,20 @@ yyreturnlab:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  YY_ACCESSING_SYMBOL (+*yyssp), yyvsp);
+                  yystos[+*yyssp], yyvsp);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
   if (yyss != yyssa)
     YYSTACK_FREE (yyss);
 #endif
-
+#if YYERROR_VERBOSE
+  if (yymsg != yymsgbuf)
+    YYSTACK_FREE (yymsg);
+#endif
   return yyresult;
 }
-
-#line 721 "compilador.y"
+#line 725 "compilador.y"
 
 
 int main (int argc, char** argv) {

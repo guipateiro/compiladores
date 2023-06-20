@@ -23,12 +23,10 @@ enum tipo_passagem{
 /* Três tipos de símbolos */
 struct variavel{
     int tipo;               //tipo_variavel
-    int deslocamento;
 };
 
 struct parametro{
     int tipo;           //tipo_bvariavel
-    int deslocamento;
     int passagem;       //tipo_passagem
 };
 
@@ -44,6 +42,7 @@ struct simbolo{
     char *identificador;    //nome da variavel
     int categoria;          // tipo_simbolo
     int nivel;              // nivel lexico
+    int deslocamento;
     struct cat_conteudo{
         struct variavel var;           //variavel //funcao
         struct parametro param;        //parametro
@@ -51,6 +50,6 @@ struct simbolo{
     } conteudo;
 };
 
-struct simbolo cria_simbolo(char *ident, int cat, int niv, struct cat_conteudo tipo);
+struct simbolo cria_simbolo(char *ident, int cat, int niv, struct cat_conteudo tipo, int deslocamento);
 
 #endif
