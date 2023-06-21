@@ -23,6 +23,7 @@ struct cat_conteudo cc;
 struct tab_simb *tabela;
 struct simbolo s ,lista_simbolos[128];
 struct parametro lista_parametros[128];
+struct parametro param_aux;
 struct simbolo *ps;
 struct simbolo *esquerdo;
 int esquerdo_recursao_func = 0;
@@ -37,6 +38,7 @@ int pilha_num_vars[1000];
 char pilha_proc_name[100][128];
 int pilha_proc = 0;
 int ponteiro_pilha_num_vars = 0;
+int em_chamada_de_funcao = 0;
 
 
 enum tipo_dado{
@@ -73,6 +75,7 @@ enum tipo_dado{
 %type <int_val> funcao_ou_ident;
 %type <int_val> empilha_retorno;
 %type <int_val> continua_atibui_ou_func;
+%type <int_val> tipo;
 
 
 
@@ -162,11 +165,16 @@ declaracao_de_var: {
 ;
 
 tipo        : TIPO {
-                     if (!strcmp(token, "integer"))
+                     if (!strcmp(token, "integer")){
                         coloca_tipo(&tabela, pas_integer, num_carrega_tipo);
-                     else if (!strcmp(token, "boolean"))
+                        $$ = pas_integer;
+                     }   
+                     else if (!strcmp(token, "boolean")){   
                         coloca_tipo(&tabela, pas_boolean, num_carrega_tipo);
+                        $$ = pas_boolean;
+                     }
                      else
+
                         perror("TIPO ERRADO, CORRIGE, TA ERRADO");
                      }
 ;
@@ -292,26 +300,37 @@ declara_function:
 
 ; 
 
-lista_params_formais:   
-                        lista_params_formais VIRGULA parametro {num_params++;}
-                        | parametro {num_params++;}
-;
+
 
 
 //====================================================================
 declaracao_params: declaracao_params PONTO_E_VIRGULA declaracao_param 
                   | declaracao_param
+;
 
 declaracao_param: {
                      num_carrega_tipo = 0;
                   }
-                   lista_params_formais DOIS_PONTOS tipo 
+                   lista_params_formais DOIS_PONTOS tipo {
+                     for(int i = num_params; i > num_params - num_carrega_tipo; i--){
+                        lista_parametros[i-1].tipo = $4;
+                     }
+                     num_carrega_tipo++;
+                   }
 
 ;
+
+lista_params_formais:   
+                        lista_params_formais VIRGULA parametro {num_params++;}
+                        | parametro {num_params++;}
+;
+
 //=======================================================================
 parametro:
          VAR IDENT {
             cc.param.passagem = parametro_ref;
+            param_aux.passagem = parametro_ref;
+            lista_parametros[num_params] = param_aux;
             printf("adicionado token [%s]\n", token);
             s = cria_simbolo(token, parametro, nivel_lexico, cc, -1);
             adicionar(&tabela, s);
@@ -319,6 +338,8 @@ parametro:
          } 
          |  IDENT {
             cc.param.passagem = parametro_copia;
+            param_aux.passagem = parametro_copia;
+            lista_parametros[num_params] = param_aux;
             printf("adicionado token [%s]\n", token);
             s = cria_simbolo(token, parametro, nivel_lexico, cc, -1);
             printf("OI %d\n\n\n", num_params);
@@ -419,19 +440,61 @@ funcao_ou_ident:
                   printf("identificador achado = %s\n", esquerdo_func[esquerdo_recursao_func-1]->identificador);
                }
                parametros_ou_nada{
-                  if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
-                     sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
-                     geraCodigo(NULL, mepa_buf);
-                     $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo;
-                  }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
-                     if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia){
+                  if (em_chamada_de_funcao){
+                     printf("EM CHAMADA DE FUNCAO AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+                     printf("token sendo pesquisado %s, numero atual = %i\n", esquerdo_func[esquerdo_recursao_func-2]->identificador, num_params);
+                     printf("por referencia? %i\n", esquerdo_func[esquerdo_recursao_func-2]->conteudo.proc.lista[num_params].tipo);
+                     if (esquerdo_func[esquerdo_recursao_func-2]->conteudo.proc.lista[num_params].passagem == parametro_ref){
+                        printf("EH UMA REFERENCIA BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n");
+                        if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
+                           printf("EH UMA VARAIVEL CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\n");
+                           sprintf(mepa_buf, "CREN %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                           geraCodigo(NULL, mepa_buf);
+                           $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo;
+                        }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
+                            printf("EH UMA PARAMETRO DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD\n");
+                           if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia){
+                              sprintf(mepa_buf, "CREM %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                              geraCodigo(NULL, mepa_buf);
+                              $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                           }else if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
+                              sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                              geraCodigo(NULL, mepa_buf);
+                              $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                           }
+                        }
+                     }else {
+                        if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
+                           sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                           geraCodigo(NULL, mepa_buf);
+                           $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo;
+                        }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
+                           if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia){
+                              sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                              geraCodigo(NULL, mepa_buf);
+                              $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                           }else if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
+                              sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                              geraCodigo(NULL, mepa_buf);
+                              $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                           }
+                        }
+                     }
+                  }else{
+                     if (esquerdo_func[esquerdo_recursao_func-1]->categoria == variavel){
                         sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
                         geraCodigo(NULL, mepa_buf);
-                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
-                     }else if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
-                        sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
-                        geraCodigo(NULL, mepa_buf);
-                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                        $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo;
+                     }else if (esquerdo_func[esquerdo_recursao_func-1]->categoria == parametro){
+                        if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_copia){
+                           sprintf(mepa_buf, "CRVL %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                           geraCodigo(NULL, mepa_buf);
+                           $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                        }else if(esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.passagem == parametro_ref){
+                           sprintf(mepa_buf, "CRVI %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                           geraCodigo(NULL, mepa_buf);
+                           $$ = esquerdo_func[esquerdo_recursao_func-1]->conteudo.param.tipo;
+                        }
                      }
                   }
                   esquerdo_recursao_func--;
@@ -439,7 +502,7 @@ funcao_ou_ident:
 ;
 
 parametros_ou_nada:
-                 empilha_retorno ABRE_PARENTESES {num_params = 0;}lista_params FECHA_PARENTESES {
+                 empilha_retorno ABRE_PARENTESES {num_params = 0; em_chamada_de_funcao = 1;}lista_params {em_chamada_de_funcao = 0;} FECHA_PARENTESES {
                  if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao || esquerdo_func[esquerdo_recursao_func-1]->categoria == procedimento){
                      $$ = undefined_type; //caso seja procedure
                      if (esquerdo_func[esquerdo_recursao_func-1]->conteudo.proc.qtd_parametros != num_params){
@@ -476,8 +539,8 @@ empilha_retorno:  {
 ;
 
 lista_params:  
-               lista_params VIRGULA expressao {num_params++; printf("%dAMAMA\n",num_params);}
-               | {printf("%d\n",num_params); }expressao {num_params++; printf("%dSUGA\n",num_params);}
+               lista_params VIRGULA expressao {num_params++; }
+               | {printf("%d\n",num_params); }expressao {num_params++;}
 ;
 
 // =========== REGRA 22 ============= //

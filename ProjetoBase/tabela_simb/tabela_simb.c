@@ -46,8 +46,12 @@ void remover_varios(struct tab_simb **tabela, int quantidade){
 void imprime_tabela(struct tab_simb **tabela){
     printf("numero de simbolos %i\n",(*tabela)->topo-1);
      for(int i = (*tabela)->topo-1; i >= 0; i--){
-        if((*tabela)->simbolos[i].categoria == procedimento){
-            printf("Simbolo %i: token = %s || nivel = %i || rotulo = %s \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].conteudo.proc.rotulo);
+        if((*tabela)->simbolos[i].categoria == procedimento || (*tabela)->simbolos[i].categoria == funcao){
+            printf("Simbolo %i: token = %s || nivel = %i || rotulo = %s ",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].conteudo.proc.rotulo);
+            for(int j = 0; j< (*tabela)->simbolos[i].conteudo.proc.qtd_parametros; j++){
+                printf("\tP%i[T: %i|PASS: %i] ", j, (*tabela)->simbolos[i].conteudo.proc.lista[j].tipo , (*tabela)->simbolos[i].conteudo.proc.lista[j].passagem );
+            }
+            printf("\n");
         }else {
             printf("Simbolo %i: token = %s || nivel = %i || deslocamento = %i \n",i, (*tabela)->simbolos[i].identificador , (*tabela)->simbolos[i].nivel , (*tabela)->simbolos[i].deslocamento);
         }
