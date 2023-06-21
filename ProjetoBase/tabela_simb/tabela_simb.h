@@ -26,4 +26,6 @@ void imprime_tabela(struct tab_simb **tabela);
 
 void remover_ate(struct tab_simb **tabela, const char *nome);
 
+void coloca_deslocamento(struct tab_simb **tabela, int num_params);
+
 #endif

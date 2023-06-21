@@ -15,6 +15,7 @@
 
 
 int num_vars;
+int desloc_num_vars;
 char mepa_buf[128];
 int nivel_lexico;
 int num_carrega_tipo;
@@ -131,15 +132,13 @@ bloco       :
 
 
 // =========== REGRA 8 ============= //
-parte_declara_vars: {num_vars = 0;
-
-                  }
-					VAR declaracao_de_vars {
+parte_declara_vars: {desloc_num_vars = 0;}
+					VAR declaracao_de_vars/* {
 					   sprintf(mepa_buf, "AMEM %d", num_vars);
                   ponteiro_pilha_num_vars++;
                   pilha_num_vars[ponteiro_pilha_num_vars] = num_vars;
 					   geraCodigo(NULL,mepa_buf);
-					   }
+					   }*/
 
 
                |
@@ -151,8 +150,14 @@ declaracao_de_vars: declaracao_de_vars declaracao_de_var
 
 declaracao_de_var: {
                      num_carrega_tipo = 0;
+                     num_vars = 0;
                   }
-                   lista_idents DOIS_PONTOS tipo PONTO_E_VIRGULA
+                  lista_idents DOIS_PONTOS tipo PONTO_E_VIRGULA{
+                     sprintf(mepa_buf, "AMEM %d", num_vars);
+                     ponteiro_pilha_num_vars++;
+                     pilha_num_vars[ponteiro_pilha_num_vars] = num_vars;
+                     geraCodigo(NULL,mepa_buf);
+					   }
 
 ;
 
@@ -170,18 +175,20 @@ tipo        : TIPO {
 // =========== REGRA 10 ============= //
 lista_idents: lista_idents VIRGULA IDENT {
                printf("adicionado token [%s]\n", token);
-               s = cria_simbolo(token, variavel, nivel_lexico, cc, num_vars);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc, desloc_num_vars);
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
+               desloc_num_vars++;
                num_vars_por_nivel[nivel_lexico]++;
                }
             | IDENT {
                printf("adicionado token [%s]\n", token);
-               s = cria_simbolo(token, variavel, nivel_lexico, cc, num_vars);
+               s = cria_simbolo(token, variavel, nivel_lexico, cc, desloc_num_vars);
                adicionar(&tabela, s);
                num_carrega_tipo++;
                num_vars++;
+               desloc_num_vars++;
                num_vars_por_nivel[nivel_lexico]++;
                }
 ;
@@ -216,19 +223,11 @@ declara_procedimento:
                         //    printf("proc.lista[%d] tem tipo %d e passado por %d \n", i, ti.proc.lista[i].tipo, ti.proc.lista[i].passagem);
                         // }
                         //printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, deslocamento);
+                        coloca_deslocamento(&tabela, num_params);
 
                         s = cria_simbolo(pilha_proc_name[pilha_proc-1], procedimento, nivel_lexico, conteudo, 0);
 
                         adicionar(&tabela, s);
-
-                        // atribui o deslocamento correto e coloca na pilha os símbolos
-                        //for(int i = num_params-1; i >= 0; --i){
-                           //lista_simbolos[i].conteudo.param.deslocamento = -4 + (i - (num_params-1)); 
-                           //printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].conteudo.param.deslocamento);
-                           //adicionar(&tabela, lista_simbolos[i]);
-                        //}
-                       // rot_num++; // para o desvio de procedures dentro dessa procedure
-                        //pilha_int_empilhar(&pilha_amem, num_params);
 
                      } PONTO_E_VIRGULA {imprime_tabela(&tabela);} bloco{
 
@@ -247,44 +246,48 @@ declara_procedimento:
 ;
 
 parametros_formais_ou_nada:
-               ABRE_PARENTESES {num_params = 0;} lista_params_formais FECHA_PARENTESES
+               ABRE_PARENTESES {num_params = 0;} declaracao_params FECHA_PARENTESES
                |
 ;
 
 declara_function:
                FUNCTION IDENT {
-                  strcpy(proc_name, token);
+                  strcpy(pilha_proc_name[pilha_proc], token);
+                  pilha_proc++;
                   num_params = 0;
-               } parametros_formais_ou_nada {
+               } parametros_formais_ou_nada{
                   rotulo_a = gerarrotulo(&p_rotulos);
                   sprintf(mepa_buf, "ENPR %d", nivel_lexico);
                   geraCodigo(rotulo_a.rotulo, mepa_buf);
 
                   strcpy(conteudo.proc.rotulo, rotulo_a.rotulo);
                   conteudo.proc.qtd_parametros = num_params;
-
+               
                   memcpy(conteudo.proc.lista, lista_parametros, sizeof(struct parametro)*num_params);
-                        
+                  
                   // for(int i = 0; i < num_params; ++i){
                   //    printf("proc.lista[%d] tem tipo %d e passado por %d \n", i, ti.proc.lista[i].tipo, ti.proc.lista[i].passagem);
                   // }
                   //printf("nome: %s nivel: %d desloca: %d\n",proc_name, nivel_lexico, deslocamento);
+                  coloca_deslocamento(&tabela, num_params);
 
-                  s = cria_simbolo(proc_name, procedimento, nivel_lexico, conteudo, 0);
+                  s = cria_simbolo(pilha_proc_name[pilha_proc-1], funcao, nivel_lexico, conteudo, -(4 + num_params));
 
                   adicionar(&tabela, s);
 
-                  // atribui o deslocamento correto e coloca na pilha os símbolos
-                  for(int i = num_params-1; i >= -1; --i){
-                     lista_simbolos[i].deslocamento = -4 + (i - (num_params-1)); 
-                     printf(">>>>>>>>> Parametro %s tem deslocamento %d\n", lista_simbolos[i].identificador, lista_simbolos[i].deslocamento);
-                     adicionar(&tabela, lista_simbolos[i]);
-                  }
-                  // rot_num++; // para o desvio de procedures dentro dessa procedure
-                  //pilha_int_empilhar(&pilha_amem, num_params);
-               } DOIS_PONTOS TIPO PONTO_E_VIRGULA bloco {
-                  sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, 9999);
-                  geraCodigo(NULL, mepa_buf);
+               } DOIS_PONTOS TIPO{
+                  coloca_tipo(&tabela, pas_integer, 1);
+               } PONTO_E_VIRGULA bloco {
+
+                     sprintf(mepa_buf, "DMEM %d", pilha_num_vars[ponteiro_pilha_num_vars]);
+                     geraCodigo(NULL, mepa_buf);
+                     ponteiro_pilha_num_vars--;
+                     sprintf(mepa_buf, "RTPR %d, %d", nivel_lexico, num_params);
+                     geraCodigo(NULL, mepa_buf);
+                     rotulo_a = pegarrotulo(&p_rotulos);
+                     pilha_proc--;
+                     remover_ate(&tabela,pilha_proc_name[pilha_proc]);
+
                } PONTO_E_VIRGULA
 
 ; 
@@ -294,38 +297,34 @@ lista_params_formais:
                         | parametro {num_params++;}
 ;
 
+
+//====================================================================
+declaracao_params: declaracao_params PONTO_E_VIRGULA declaracao_param 
+                  | declaracao_param
+
+declaracao_param: {
+                     num_carrega_tipo = 0;
+                  }
+                   lista_params_formais DOIS_PONTOS tipo 
+
+;
+//=======================================================================
 parametro:
          VAR IDENT {
             cc.param.passagem = parametro_ref;
             printf("adicionado token [%s]\n", token);
-            s = cria_simbolo(token, parametro, nivel_lexico, cc, -4 - num_params);
-         } DOIS_PONTOS TIPO {
-            if (!strcmp(token, "integer"))
-               s.conteudo.param.tipo = pas_integer;
-            else if (!strcmp(token, "boolean"))
-               s.conteudo.param.tipo = pas_boolean;
-            else {
-               //fprintf(stderr, "Tipo do parametro formal invalido\n");
-               exit(1);
-            }
+            s = cria_simbolo(token, parametro, nivel_lexico, cc, -1);
             adicionar(&tabela, s);
+            num_carrega_tipo++;
          } 
          |  IDENT {
             cc.param.passagem = parametro_copia;
             printf("adicionado token [%s]\n", token);
-            s = cria_simbolo(token, parametro, nivel_lexico, cc, -4 - num_params);
+            s = cria_simbolo(token, parametro, nivel_lexico, cc, -1);
             printf("OI %d\n\n\n", num_params);
             printf("TCHAU %d\n\n\n", s.deslocamento);
-         } DOIS_PONTOS TIPO {
-            if (!strcmp(token, "integer"))
-               s.conteudo.param.tipo = pas_integer;
-            else if (!strcmp(token, "boolean"))
-               s.conteudo.param.tipo = pas_boolean;
-            else {
-               //fprintf(stderr, "Tipo do parametro formal invalido\n");
-               exit(1);
-            }
             adicionar(&tabela, s);
+            num_carrega_tipo++;
          }
 ;
 
@@ -395,6 +394,15 @@ atribui_contiunuacao: { printf("ATRIBUICAO ESCOLHIDA - continuacao\n");}
                            exit(1);
                         }
                      } 
+                     else if(esquerdo_func[esquerdo_recursao_func-1]->categoria == funcao){
+                         if($2 == esquerdo_func[esquerdo_recursao_func-1]->conteudo.var.tipo){
+                           sprintf(mepa_buf, "ARMZ %d, %d",esquerdo_func[esquerdo_recursao_func-1]->nivel , esquerdo_func[esquerdo_recursao_func-1]->deslocamento );
+                           geraCodigo(NULL, mepa_buf);
+                        }else{
+                           printf ("ERRO: expresao entre tipos incompativeis \n");
+                           exit(1);
+                        } 
+                     }
                   }
 ;
 

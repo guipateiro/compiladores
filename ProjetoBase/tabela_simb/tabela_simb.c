@@ -77,3 +77,13 @@ void remover_ate(struct tab_simb **tabela, const char *nome) {
     adicionar(tabela,*simb);
     imprime_tabela(tabela);
 }
+
+
+void coloca_deslocamento(struct tab_simb **tabela, int num_params){
+    int deslc = 0;
+    for(int i = (*tabela)->topo-1; i >= (*tabela)->topo-(num_params); i--){
+        //printf("i = %i || (*tabela)->topo-(quantidade) = %i\n", i, (*tabela)->topo-(quantidade));
+       (*tabela)->simbolos[i].deslocamento = -4 + deslc;      
+       deslc--;   
+    }   
+}
