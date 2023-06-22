@@ -5,7 +5,8 @@ enum tipo_simbolo{
     variavel,
     parametro,
     procedimento,
-    funcao
+    funcao,
+    label
 };
 
 enum tipo_variavel{

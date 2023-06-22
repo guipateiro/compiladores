@@ -21,6 +21,7 @@ int nivel_lexico;
 int num_carrega_tipo;
 struct cat_conteudo cc;
 struct tab_simb *tabela;
+struct tab_simb *tabela_label;
 struct simbolo s ,lista_simbolos[128];
 struct parametro lista_parametros[128];
 struct parametro param_aux;
@@ -95,6 +96,7 @@ enum tipo_dado{
 programa    :{
              geraCodigo (NULL, "INPP");
              tabela = inicializa();
+             tabela_label = inicializa();
              p_rotulos = inicializa_rotulos();
              nivel_lexico = 0;
              }
@@ -113,6 +115,10 @@ input_idents: IDENT VIRGULA IDENT
 
 // =========== REGRA 2 ============= //
 bloco       :
+            parte_declara_rotulos
+            {
+            
+            }
             parte_declara_vars
             {
             //fprintf(stderr,"COISA DE TESTE \n");
@@ -132,7 +138,21 @@ bloco       :
             }
 ;
 
+parte_declara_rotulos:
+               LABEL declaracao_de_rotulos PONTO_E_VIRGULA
+               |
+;
 
+declaracao_de_rotulos: declaracao_de_rotulos VIRGULA NUMERO {
+                           s = cria_simbolo(atoi(token), token, nivel_lexico, cc, 0);
+                           adicionar(&tabela_label, s);
+                           
+                           }
+                     | NUMERO {
+                        s = cria_simbolo(atoi(token), token, nivel_lexico, cc, 0);
+                        adicionar(&tabela_label, s);
+                     }
+;
 
 // =========== REGRA 8 ============= //
 parte_declara_vars: {desloc_num_vars = 0;}
@@ -353,6 +373,9 @@ parametro:
 comandos: 
          comandos PONTO_E_VIRGULA comando 
          | comando 
+         | NUMERO {
+            ps = busca(&tabela_label, atoi(token));
+            geraCodigo()} DOIS_PONTOS comando
          |
 ;
 
@@ -364,8 +387,13 @@ comando:
          | comando_repetitivo
          | leitura
          | escrita
+         | desvio
+         |
 ; 
-         
+
+desvio:
+         GOTO NUMERO {}
+;         
  
 // =========== REGRA 19 ============= //
 atribui_ou_func:
