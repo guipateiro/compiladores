@@ -40,6 +40,8 @@ char pilha_proc_name[100][128];
 int pilha_proc = 0;
 int ponteiro_pilha_num_vars = 0;
 int em_chamada_de_funcao = 0;
+struct simbolo *ps2;
+int rolo_chamada_proc;
 
 
 enum tipo_dado{
@@ -144,13 +146,17 @@ parte_declara_rotulos:
 ;
 
 declaracao_de_rotulos: declaracao_de_rotulos VIRGULA NUMERO {
-                           s = cria_simbolo(atoi(token), token, nivel_lexico, cc, 0);
-                           adicionar(&tabela_label, s);
-                           
+                           rotulo_a = gerarrotulosp(&p_rotulos);
+                           strcpy(conteudo.proc.rotulo, rotulo_a.rotulo);
+                           s = cria_simbolo(token, label, nivel_lexico, conteudo, 0);
+                           adicionar(&tabela, s);
                            }
                      | NUMERO {
-                        s = cria_simbolo(atoi(token), token, nivel_lexico, cc, 0);
-                        adicionar(&tabela_label, s);
+                        rotulo_a = gerarrotulosp(&p_rotulos);
+                        strcpy(conteudo.proc.rotulo, rotulo_a.rotulo);
+                           printf("OI\n");
+                        s = cria_simbolo(token, label, nivel_lexico, conteudo, 0);
+                        adicionar(&tabela, s);
                      }
 ;
 
@@ -373,9 +379,6 @@ parametro:
 comandos: 
          comandos PONTO_E_VIRGULA comando 
          | comando 
-         | NUMERO {
-            ps = busca(&tabela_label, atoi(token));
-            geraCodigo()} DOIS_PONTOS comando
          |
 ;
 
@@ -388,11 +391,33 @@ comando:
          | leitura
          | escrita
          | desvio
+         | NUMERO {
+            printf("OY\n");
+            ps = busca(&tabela, token);
+            geraCodigo(ps->conteudo.proc.rotulo,"NADA");
+            } DOIS_PONTOS comando {
+               if(rolo_chamada_proc){
+
+               }
+            }
          |
 ; 
 
 desvio:
-         GOTO NUMERO {}
+         GOTO NUMERO {
+            ps = busca(&tabela, token);
+            if (ps == NULL){
+               printf("LABEL NAO ENCONTRADO\n");
+               exit(1);
+            }
+            if (0){
+               
+            }
+            else{
+               sprintf(mepa_buf,"DSVR %s, %d, %d",ps->conteudo.proc.rotulo, ps->nivel, nivel_lexico);
+               geraCodigo(NULL, mepa_buf);
+            }
+         }
 ;         
  
 // =========== REGRA 19 ============= //

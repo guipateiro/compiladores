@@ -21,6 +21,13 @@ struct rotulo gerarrotulo(struct pilha_rotulos ** pilha_r){
     return (*pilha_r)->pilha[(*pilha_r)->topo-1];
 }
 
+struct rotulo gerarrotulosp(struct pilha_rotulos ** pilha_r){
+    sprintf((*pilha_r)->pilha[(*pilha_r)->topo].rotulo, "R%02i",  (*pilha_r)->num_rotulo);
+    //(*pilha_r)->topo++;
+    (*pilha_r)->num_rotulo++;
+    return (*pilha_r)->pilha[(*pilha_r)->topo];
+}
+
 struct rotulo pegarrotulo(struct pilha_rotulos ** pilha_r){
     (*pilha_r)->topo--;
     return (*pilha_r)->pilha[(*pilha_r)->topo];
